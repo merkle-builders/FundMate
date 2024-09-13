@@ -1,4 +1,4 @@
-import { MODULE_ADDRESS } from "@/constants";
+import { MODULE_ADDRESS } from "@/core/constants";
 import { aptosClient } from "@/utils/aptosClient";
 
 export const getMessageContent = async (): Promise<string> => {

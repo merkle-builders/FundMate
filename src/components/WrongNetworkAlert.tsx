@@ -1,6 +1,6 @@
 "use client";
 
-import { NETWORK } from "@/constants";
+import { NETWORK } from "@/core/constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import * as Dialog from "@radix-ui/react-dialog";
 

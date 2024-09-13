@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^1.26.0",
+    "@reduxjs/toolkit": "^2.2.7",
     "@aptos-labs/wallet-adapter-react": "^3.5.0",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -32,7 +33,10 @@
     "next": "^14.2.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.1.2",
+    "jwt-decode": "^4.0.0",
     "react-router-dom": "^6.23.1",
+    "zustand": "^4.5.2",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },

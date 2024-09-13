@@ -1,5 +1,5 @@
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
-import { MODULE_ADDRESS } from "@/constants";
+import { MODULE_ADDRESS } from "@/core/constants";
 
 export type WriteMessageArguments = {
   content: string; // the content of the message
