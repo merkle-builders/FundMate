@@ -125,33 +125,8 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
               </p>
               <AptosPrivacyPolicy.PoweredBy className="flex gap-1.5 items-center text-xs leading-5 text-muted-foreground" />
             </AptosPrivacyPolicy>
-            <div className="flex items-center gap-3 pt-4 text-muted-foreground">
-              <div className="h-px w-full bg-secondary" />
-              Or
-              <div className="h-px w-full bg-secondary" />
-            </div>
           </div>
         )}
-
-        <div className="flex flex-col gap-3 pt-3">
-          {availableWallets.map((wallet) => (
-            <WalletRow key={wallet.name} wallet={wallet} onConnect={close} />
-          ))}
-          {!!installableWallets.length && (
-            <Collapsible className="flex flex-col gap-3">
-              <CollapsibleTrigger asChild>
-                <Button size="sm" variant="ghost" className="gap-2">
-                  More wallets <ChevronDown />
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="flex flex-col gap-3">
-                {installableWallets.map((wallet) => (
-                  <WalletRow key={wallet.name} wallet={wallet} onConnect={close} />
-                ))}
-              </CollapsibleContent>
-            </Collapsible>
-          )}
-        </div>
       </AboutAptosConnect>
     </DialogContent>
   );
