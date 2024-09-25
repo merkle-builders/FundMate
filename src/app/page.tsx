@@ -9,7 +9,7 @@ import { WalletDetails } from "@/components/WalletDetails";
 // Internal Components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Button } from "@/components/ui/button";
+import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
   const { connected } = useWallet();
@@ -33,8 +33,8 @@ function App() {
             <CardHeader>
               <CardTitle>Welcome to Movepay</CardTitle>
             </CardHeader>
-            <div className="flex justify-center">
-              <Button>Login to Movepay</Button>
+            <div className="flex justify-center mt-80">
+              <WalletBaselogin />
             </div>
           </>
         )}
