@@ -1,5 +1,10 @@
+"use client";
+
 // import { useEffect } from "react";
 // import { useRouter } from "next/navigation";
+
+import { motion } from "framer-motion";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { AccountInfo } from "@/components/AccountInfo";
 import { Header } from "@/components/Header";
 import { MessageBoard } from "@/components/MessageBoard";
@@ -26,29 +31,42 @@ function App() {
 
   return (
     <>
-      <Header />
-      <div className="flex items-center justify-center flex-col">
-        {connected ? (
-          <Card>
-            <CardContent className="flex flex-col gap-10 pt-6">
-              <WalletDetails />
-              <NetworkInfo />
-              <AccountInfo />
-              <TransferAPT />
-              <MessageBoard />
-            </CardContent>
-          </Card>
-        ) : (
-          <>
-            <CardHeader>
-              <CardTitle>Welcome to Movepay</CardTitle>
-            </CardHeader>
-            <div className="flex justify-center mt-80">
-              <WalletBaselogin />
-            </div>
-          </>
-        )}
-      </div>
+      <AuroraBackground>
+        <motion.div
+          initial={{ opacity: 0.0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.8,
+            ease: "easeInOut",
+          }}
+          className="w-full h-full"
+        >
+          <Header />
+          <div className="flex items-center justify-center flex-col">
+            {connected ? (
+              <Card>
+                <CardContent className="flex flex-col gap-10 pt-6">
+                  <WalletDetails />
+                  <NetworkInfo />
+                  <AccountInfo />
+                  <TransferAPT />
+                  <MessageBoard />
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                <CardHeader>
+                  <CardTitle>Welcome to Movepay</CardTitle>
+                </CardHeader>
+                <div className="flex justify-center mt-80">
+                  <WalletBaselogin />
+                </div>
+              </>
+            )}
+          </div>
+        </motion.div>
+      </AuroraBackground>
     </>
   );
 }
