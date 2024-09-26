@@ -18,7 +18,6 @@ import {
   WalletItem,
   groupAndSortWallets,
   isAptosConnectWallet,
-  isInstallRequired,
   truncateAddress,
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
@@ -86,7 +85,7 @@ interface ConnectWalletDialogProps {
 
 function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
   const { wallets = [] } = useWallet();
-  const { aptosConnectWallets, availableWallets, installableWallets } = groupAndSortWallets(wallets);
+  const { aptosConnectWallets } = groupAndSortWallets(wallets);
 
   const hasAptosConnectWallets = !!aptosConnectWallets.length;
 
@@ -95,13 +94,10 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
       <AboutAptosConnect renderEducationScreen={renderEducationScreen}>
         <DialogHeader>
           <DialogTitle className="flex flex-col text-center leading-snug">
-            {hasAptosConnectWallets ? (
+            {hasAptosConnectWallets && (
               <>
                 <span>Log in or sign up</span>
-                <span>with Social + Aptos Connect</span>
               </>
-            ) : (
-              "Connect Wallet"
             )}
           </DialogTitle>
         </DialogHeader>
@@ -111,12 +107,7 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
             {aptosConnectWallets.map((wallet) => (
               <AptosConnectWalletRow key={wallet.name} wallet={wallet} onConnect={close} />
             ))}
-            <p className="flex gap-1 justify-center items-center text-muted-foreground text-sm">
-              Learn more about{" "}
-              <AboutAptosConnect.Trigger className="flex gap-1 py-3 items-center text-foreground">
-                Aptos Connect <ArrowRight size={16} />
-              </AboutAptosConnect.Trigger>
-            </p>
+
             <AptosPrivacyPolicy className="flex flex-col items-center py-1">
               <p className="text-xs leading-5">
                 <AptosPrivacyPolicy.Disclaimer />{" "}
@@ -135,30 +126,6 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
 interface WalletRowProps {
   wallet: AnyAptosWallet;
   onConnect?: () => void;
-}
-
-function WalletRow({ wallet, onConnect }: WalletRowProps) {
-  return (
-    <WalletItem
-      wallet={wallet}
-      onConnect={onConnect}
-      className="flex items-center justify-between px-4 py-3 gap-4 border rounded-md"
-    >
-      <div className="flex items-center gap-4">
-        <WalletItem.Icon className="h-6 w-6" />
-        <WalletItem.Name className="text-base font-normal" />
-      </div>
-      {isInstallRequired(wallet) ? (
-        <Button size="sm" variant="ghost" asChild>
-          <WalletItem.InstallLink />
-        </Button>
-      ) : (
-        <WalletItem.ConnectButton asChild>
-          <Button size="sm">Connect</Button>
-        </WalletItem.ConnectButton>
-      )}
-    </WalletItem>
-  );
 }
 
 function AptosConnectWalletRow({ wallet, onConnect }: WalletRowProps) {

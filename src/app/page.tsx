@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AccountInfo } from "@/components/AccountInfo";
 import { Header } from "@/components/Header";
 import { MessageBoard } from "@/components/MessageBoard";
@@ -13,7 +15,14 @@ import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
   const { connected } = useWallet();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (connected) {
+      router.push("/creator");
+    }
+  }, [connected]);
+  console.log("connect status is:", connected);
   return (
     <>
       <Header />
