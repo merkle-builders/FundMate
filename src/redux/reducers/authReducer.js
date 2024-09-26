@@ -7,7 +7,7 @@ const initialState = {
   idToken: preloadedState || {},
   activeAccountAdress: address || "",
   balance: 0,
-  selfNexusId: ""
+  selfNexusId: "",
 };
 
 const authSlice = createSlice({
@@ -29,7 +29,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthData, setActiveAccountAddress, setUserBalance, setSelfNexusId } =
-  authSlice.actions;
+export const { setAuthData, setActiveAccountAddress, setUserBalance, setSelfNexusId } = authSlice.actions;
 
 export default authSlice.reducer; // Export the reducer as default

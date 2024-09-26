@@ -1,5 +1,3 @@
-"use client";
-
 // import { useEffect } from "react";
 // import { useRouter } from "next/navigation";
 import { AccountInfo } from "@/components/AccountInfo";
@@ -14,7 +12,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
-  const { connected } = useWallet();
+  const { connected, wallet } = useWallet();
   // const router = useRouter();
 
   // useEffect(() => {
@@ -23,6 +21,8 @@ function App() {
   //   }
   // }, [connected]);
   // console.log("connect status is:", connected);
+
+  console.log("wallet info", wallet);
 
   return (
     <>

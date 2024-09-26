@@ -1,3 +1,4 @@
+"use client";
 // Internal components
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";

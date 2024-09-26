@@ -28,9 +28,7 @@ export const KeylessAccountEncoding = {
  * @param account - The account to validate.
  * @returns The account if it is valid, otherwise undefined.
  */
-export const validateKeylessAccount = (
-  account: KeylessAccount
-): KeylessAccount | undefined =>
+export const validateKeylessAccount = (account: KeylessAccount): KeylessAccount | undefined =>
   // Check the Ephemeral key pair expiration
   isValidEphemeralKeyPair(account.ephemeralKeyPair) &&
   // Check the idToken for nonce
