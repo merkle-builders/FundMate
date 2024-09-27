@@ -33,8 +33,8 @@ function App() {
           initial={{ opacity: 0.0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{
-            delay: 0.3,
-            duration: 0.8,
+            delay: 0.1,
+            duration: 0.5,
             ease: "easeInOut",
           }}
           className="w-full h-full"
@@ -42,12 +42,9 @@ function App() {
           <Header />
           <div className="flex items-center justify-center flex-col">
             {connected ? (
-              <Card>
-                <CardContent className="flex flex-col gap-10 pt-6">
-                  <AccountInfo />
-                  <MessageBoard />
-                </CardContent>
-              </Card>
+              <div className="h-screen">
+                  {"You are connected"}
+              </div>
             ) : (
               <>
                 <CardHeader>
