@@ -27,6 +27,12 @@ const ChatAiIcons = [
   },
 ];
 
+interface Message {
+  id: string;
+  createdAt?: Date;
+  content: string;
+  tool_call_id?: string;
+}
 export default function Message() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading, reload } = useChat({
@@ -55,6 +61,16 @@ export default function Message() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGenerating(true);
+
+    const userMessage: Message = {
+      id: crypto.randomUUID(), // Generate a unique ID for each message
+      content: input,
+      createdAt: new Date(), // Optional: add a timestamp
+    };
+
+    // Add the user's message to the array
+    setMessages([...messages, userMessage]);
+
     handleSubmit(e);
   };
 
@@ -214,23 +230,6 @@ export default function Message() {
             </Button>
           </div>
         </form>
-      </div>
-      <div className="pt-4 flex gap-2 items-center">
-        <GitHubLogoIcon className="size-4" />
-        <p className="text-xs">
-          <a
-            href="https://github.com/jakobhoeg/shadcn-chat"
-            className="font-bold inline-flex flex-1 justify-center gap-1 leading-4 hover:underline"
-          >
-            shadcn-chat
-            <svg aria-hidden="true" height="7" viewBox="0 0 6 6" width="7" className="opacity-70">
-              <path
-                d="M1.25215 5.54731L0.622742 4.9179L3.78169 1.75597H1.3834L1.38936 0.890915H5.27615V4.78069H4.40513L4.41109 2.38538L1.25215 5.54731Z"
-                fill="currentColor"
-              ></path>
-            </svg>
-          </a>
-        </p>
       </div>
     </main>
   );
