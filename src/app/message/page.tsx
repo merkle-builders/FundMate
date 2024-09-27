@@ -1,9 +1,4 @@
-import React from "react";
-
-export default function Message() {
-  return <div></div>;
-}
-("use client");
+"use client";
 
 import { ChatBubble, ChatBubbleAction, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
@@ -15,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import CodeDisplayBlock from "@/components/code-display-block";
+import CodeDisplayBlock from "@/components/ui/code-display-block";
 
 const ChatAiIcons = [
   {
@@ -32,7 +27,7 @@ const ChatAiIcons = [
   },
 ];
 
-export default function Home() {
+export default function Message() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading, reload } = useChat({
     onResponse(response) {
