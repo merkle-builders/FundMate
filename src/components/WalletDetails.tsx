@@ -26,7 +26,7 @@ export function WalletDetails() {
             ) : (
               "Not Present"
             ),
-          },
+          }
         ]}
       />
     </div>
