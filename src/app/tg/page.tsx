@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import { Search, Send, Paperclip, Mic, Menu, X, Settings, Bookmark, Phone, Moon } from 'lucide-react';
 
