@@ -17,14 +17,14 @@ export default function Profile() {
       </div>
 
       <div className="flex flex-col justify-center items-center gap-2 mt-5">
-        <Label>Account Address</Label>
+        <Label className="font-semibold ">Account Address</Label>
         <Input className="w-[500px] font-semibold " value={account?.address} disabled={true} />
       </div>
       <div className="flex flex-col justify-center items-center gap-2 mt-5">
-        <Label>Name</Label>
+        <Label className="font-semibold">Name</Label>
         <Input className="w-[500px] font-semibold" value={"Paul"} disabled={true} />
       </div>
-      <div className="flex justify-center mt-72">
+      <div className="flex justify-center mt-48">
         <Linechart />
       </div>
     </div>

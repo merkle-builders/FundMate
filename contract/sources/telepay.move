@@ -1,15 +1,13 @@
-module messaging_app::messaging_payment {
-    use std::string::{Self, String};
+module 0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f::messaging_payment { // Deployer's address in global storage
     use std::vector;
     use aptos_framework::account;
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::AptosCoin;
     use aptos_framework::timestamp;
     use std::table::{Self, Table};
-    use std::signer;
 
     struct UserProfile has key {
-        user_name: String,
+        username: vector<u8>,  // In move every string is represented by an array of 8 bits per character 
         friends: vector<address>,
         conversations: Table<address, Conversation>,
     }
@@ -21,14 +19,14 @@ module messaging_app::messaging_payment {
 
     struct Message has store, drop {
         sender: address,
-        content: String,
+        content: vector<u8>, // In move every string is represented by an array of 8 bits per character 
         timestamp: u64,
     }
 
     struct Payment has store, drop {
         sender: address,
         amount: u64,
-        note: String,
+        note: vector<u8>, // In move every string is represented by an array of 8 bits per character 
         timestamp: u64,
     }
 
@@ -39,7 +37,7 @@ module messaging_app::messaging_payment {
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
 
-    public fun create_id(account: &signer, user_name: String) {
+    public fun create_id(account: &signer, user_name: vector<u8>) {
         let signer_address = account::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
@@ -72,7 +70,7 @@ module messaging_app::messaging_payment {
         account: &signer,
         recipient: address,
         amount: u64,
-        note: String
+        note: vector<u8>
     ) acquires UserProfile {
         let signer_address = account::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -102,7 +100,7 @@ module messaging_app::messaging_payment {
         vector::push_back(&mut recipient_conversation.payments, payment);
     }
 
-    public fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
+    public fun send_message(account: &signer, recipient: address, content: vector<u8>) acquires UserProfile {
         let signer_address = account::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
         assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
