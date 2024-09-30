@@ -1,13 +1,12 @@
 "use client";
 
-import { ChatBubble, ChatBubbleAction, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
+import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { Button } from "@/components/ui/button";
-import { CopyIcon, CornerDownLeft, Mic, Paperclip, RefreshCcw, Send, Volume2 } from "lucide-react";
+import { CopyIcon, CornerDownLeft, RefreshCcw, Volume2 } from "lucide-react";
 import { useChat } from "ai/react";
-import { useEffect, useRef, useState } from "react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { useEffect, useRef } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CodeDisplayBlock from "@/components/ui/code-display-block";
