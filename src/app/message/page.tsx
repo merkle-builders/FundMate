@@ -4,27 +4,12 @@ import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { Button } from "@/components/ui/button";
-import { CopyIcon, CornerDownLeft, RefreshCcw, Volume2 } from "lucide-react";
+import { CornerDownLeft } from "lucide-react";
 import { useChat } from "ai/react";
 import { useEffect, useRef } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CodeDisplayBlock from "@/components/ui/code-display-block";
-
-const ChatAiIcons = [
-  {
-    icon: CopyIcon,
-    label: "Copy",
-  },
-  {
-    icon: RefreshCcw,
-    label: "Refresh",
-  },
-  {
-    icon: Volume2,
-    label: "Volume",
-  },
-];
 
 interface Message {
   id: string;
