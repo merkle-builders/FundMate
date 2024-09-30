@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { EllipsisVertical } from "lucide-react";
