@@ -19,7 +19,7 @@ interface Message {
   role: "user" | "friend";
 }
 export default function Message() {
-  const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading, reload } = useChat({});
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({}); // setMessages and reload add (optional)
 
   const messagesRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -31,15 +31,15 @@ export default function Message() {
   }, [messages]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const userMessage: Message = {
-      id: crypto.randomUUID(), // Generate a unique ID for each message
-      content: input,
-      createdAt: new Date(),
-      role: "user",
-    };
+    // const userMessage: Message = {
+    //   id: crypto.randomUUID(), // Generate a unique ID for each message
+    //   content: input,
+    //   createdAt: new Date(),
+    //   role: "user",
+    // };
 
     // Add the user's message to the array
-    setMessages([...messages, userMessage]);
+    // setMessages([...messages, userMessage]);
     e.preventDefault();
     handleSubmit(e);
   };
@@ -52,23 +52,23 @@ export default function Message() {
     }
   };
 
-  const handleActionClick = async (action: string, messageIndex: number) => {
-    console.log("Action clicked:", action, "Message index:", messageIndex);
-    if (action === "Refresh") {
-      try {
-        await reload();
-      } catch (error) {
-        console.error("Error reloading:", error);
-      }
-    }
+  //   const handleActionClick = async (action: string, messageIndex: number) => {
+  //     console.log("Action clicked:", action, "Message index:", messageIndex);
+  //     if (action === "Refresh") {
+  //       try {
+  //         await reload();
+  //       } catch (error) {
+  //         console.error("Error reloading:", error);
+  //       }
+  //     }
 
-    if (action === "Copy") {
-      const message = messages[messageIndex];
-      if (message && message.role === "assistant") {
-        navigator.clipboard.writeText(message.content);
-      }
-    }
-  };
+  //     if (action === "Copy") {
+  //       const message = messages[messageIndex];
+  //       if (message && message.role === "assistant") {
+  //         navigator.clipboard.writeText(message.content);
+  //       }
+  //     }
+  //   };
 
   return (
     <main className="flex h-screen w-full max-w-3xl flex-col items-center mx-auto py-6">
