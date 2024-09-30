@@ -96,9 +96,17 @@ module 0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f::messa
         let sender_conversation = table::borrow_mut(&mut user_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.payments, payment);
 
+        // Create a new payment instance for the recipient's conversation
+    let recipient_payment = Payment {
+        sender: signer_address,
+        amount,
+        note,
+        timestamp: timestamp::now_seconds(),
+    };
+
         let recipient_profile = borrow_global_mut<UserProfile>(recipient);
         let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
-        vector::push_back(&mut recipient_conversation.payments, payment);
+        vector::push_back(&mut recipient_conversation.payments, recipient_payment);
     }
 
     public fun send_message(account: &signer, recipient: address, content: vector<u8>) acquires UserProfile {
@@ -119,10 +127,16 @@ module 0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f::messa
         let sender_conversation = table::borrow_mut(&mut user_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.messages, message);
 
+        let recipient_message = Message {
+            sender: signer_address,
+            content,
+            timestamp: timestamp::now_seconds(),
+        };
+
         // Add message to recipient's conversation
         let recipient_profile = borrow_global_mut<UserProfile>(recipient);
         let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
-        vector::push_back(&mut recipient_conversation.messages, message);
+        vector::push_back(&mut recipient_conversation.messages, recipient_message);
     }
 
     // Helper function to get friends list
