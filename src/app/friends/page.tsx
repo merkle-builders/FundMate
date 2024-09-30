@@ -28,14 +28,14 @@ export default function Friends() {
           <TableCaption>A list of all your aptos friends</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Email</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead className="w-[100px]">Name</TableHead>
+              <TableHead>Address</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
               <TableCell className="font-medium">mierlo.paul</TableCell>
-              <TableCell>Paid</TableCell>
+              <TableCell>{account?.address}</TableCell>
               <TableCell className="flex justify-end ">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
