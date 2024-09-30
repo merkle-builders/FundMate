@@ -6,6 +6,7 @@ module messaging_app::messaging_payment {
     use aptos_framework::aptos_coin::AptosCoin;
     use aptos_framework::timestamp;
     use std::table::{Self, Table};
+    use std::signer;
 
     struct UserProfile has key {
         user_name: String,

@@ -117,6 +117,10 @@ export default function Message() {
         {/* Loading */}
       </ChatMessageList>
       <div className="w-full px-4">
+        <div className="flex gap-4 mb-5">
+          <Button className="rounded-2xl">Pay</Button>
+          <Button className="rounded-2xl">Request Payment</Button>
+        </div>
         <form
           ref={formRef}
           onSubmit={onSubmit}
@@ -130,16 +134,6 @@ export default function Message() {
             className="min-h-12 resize-none rounded-lg bg-background border-0 p-3 shadow-none focus-visible:ring-0"
           />
           <div className="flex items-center p-3 pt-0">
-            <Button variant="ghost" size="icon">
-              <Paperclip className="size-4" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-
-            <Button variant="ghost" size="icon">
-              <Mic className="size-4" />
-              <span className="sr-only">Use Microphone</span>
-            </Button>
-
             <Button disabled={!input || isLoading} type="submit" size="sm" className="ml-auto gap-1.5">
               Send Message
               <CornerDownLeft className="size-3.5" />
