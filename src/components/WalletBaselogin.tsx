@@ -1,7 +1,6 @@
 "use client";
 // Internal components
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -22,7 +21,7 @@ import {
   truncateAddress,
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
-import { ArrowLeft, ArrowRight, ChevronDown, Copy, LogOut, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, Copy, LogOut, User } from "lucide-react";
 import { useCallback, useState } from "react";
 
 export function WalletBaselogin() {
