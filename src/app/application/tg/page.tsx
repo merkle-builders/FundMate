@@ -2,6 +2,14 @@
 import React, { useState } from "react";
 import { Search, Send, Paperclip, Mic, Menu, X, Settings, Bookmark, Phone, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -23,7 +31,21 @@ const TelegramUI = ({}) => {
       {/* Main sidebar */}
       <div className="w-1/4 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-4 border-b border-gray-200 flex items-center">
-          <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer" onClick={toggleSidebar} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+              <DropdownMenuItem>GitHub</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem disabled>API</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <div className="relative flex-grow">
             <input
               type="text"
@@ -93,36 +115,6 @@ const TelegramUI = ({}) => {
       </div>
 
       {/* Sliding sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out`}
-      >
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Menu</h2>
-          <X className="w-6 h-6 text-gray-500 cursor-pointer" onClick={toggleSidebar} />
-        </div>
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-              <Settings className="w-5 h-5 text-gray-500" />
-              <span>Settings</span>
-            </li>
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-              <Bookmark className="w-5 h-5 text-gray-500" />
-              <span>Saved Messages</span>
-            </li>
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-              <Phone className="w-5 h-5 text-gray-500" />
-              <span>Calls</span>
-            </li>
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-              <Moon className="w-5 h-5 text-gray-500" />
-              <span>Night Mode</span>
-            </li>
-          </ul>
-        </nav>
-      </div>
 
       {/* Overlay */}
     </div>
