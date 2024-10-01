@@ -17,24 +17,42 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { createId } from "@/message-functions/createID";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     setIsShowModal(true);
   }, []);
   console.log("showmodal status:", isShowModal);
-  const { disconnect } = useWallet();
+
+  const { disconnect, signAndSubmitTransaction } = useWallet();
+
+  const handleCreateProfile = async () => {
+    if (!userName) {
+      alert("Please enter a username");
+      return;
+    }
+
+    try {
+      const transaction = createId({ userName });
+      const result = await signAndSubmitTransaction(transaction);
+      console.log("Transaction submitted:", result);
+      // Handle successful profile creation
+    } catch (error) {
+      console.error("Error creating profile:", error);
+      // Handle error
+    }
+  };
 
   const chats = [
     { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
@@ -146,11 +164,18 @@ const TelegramUI = ({}) => {
               <Label htmlFor="username" className="text-right">
                 Username
               </Label>
-              <Input id="username" value="@peduarte" className="col-span-3" />
+              <Input
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                id="username"
+                className="col-span-3"
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" onClick={handleCreateProfile}>
+              Save changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
