@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -21,6 +22,8 @@ const TelegramUI = ({}) => {
     { id: 2, name: "Jane Smith", lastMessage: "Did you see the news?", time: "09:15 AM" },
     { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
   ];
+
+  const router = useRouter();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -38,7 +41,7 @@ const TelegramUI = ({}) => {
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
-              <DropdownMenuItem>GitHub</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/application/profile")}>Profile</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuItem disabled>API</DropdownMenuItem>
               <DropdownMenuSeparator />
