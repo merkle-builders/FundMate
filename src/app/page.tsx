@@ -1,7 +1,7 @@
 "use client";
 
-// import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { motion } from "framer-motion";
 import { AuroraBackground } from "@/components/ui/aurora-background";
@@ -15,14 +15,14 @@ import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
   const { connected, wallet } = useWallet();
-  // const router = useRouter();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   if (connected) {
-  //     router.push("/creator");
-  //   }
-  // }, [connected]);
-  // console.log("connect status is:", connected);
+  useEffect(() => {
+    if (connected) {
+      router.push("/application");
+    }
+  }, [connected]);
+  console.log("connect status is:", connected);
 
   console.log("wallet info", wallet);
 

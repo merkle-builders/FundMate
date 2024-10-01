@@ -1,16 +1,16 @@
-"use client"
-import React, { useState } from 'react';
-import { Search, Send, Paperclip, Mic, Menu, X, Settings, Bookmark, Phone, Moon } from 'lucide-react';
+"use client";
+import React, { useState } from "react";
+import { Search, Send, Paperclip, Mic, Menu, X, Settings, Bookmark, Phone, Moon } from "lucide-react";
 
 const TelegramUI = () => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const chats = [
-    { id: 1, name: 'John Doe', lastMessage: 'Hey, how are you?', time: '10:30 AM' },
-    { id: 2, name: 'Jane Smith', lastMessage: 'Did you see the news?', time: '09:15 AM' },
-    { id: 3, name: 'Bob Johnson', lastMessage: 'Let\'s meet tomorrow', time: 'Yesterday' },
+    { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
+    { id: 2, name: "Jane Smith", lastMessage: "Did you see the news?", time: "09:15 AM" },
+    { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
   ];
 
   const toggleSidebar = () => {
@@ -37,7 +37,7 @@ const TelegramUI = () => {
             <div
               key={chat.id}
               className={`p-4 hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${
-                selectedChat === chat.id ? 'bg-blue-100' : ''
+                selectedChat === chat.id ? "bg-blue-100" : ""
               }`}
               onClick={() => setSelectedChat(chat.id)}
             >
@@ -60,11 +60,9 @@ const TelegramUI = () => {
           <>
             <div className="p-4 border-b border-gray-200 flex items-center">
               <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-              <h2 className="font-semibold">{chats.find(chat => chat.id === selectedChat)?.name}</h2>
+              <h2 className="font-semibold">{chats.find((chat) => chat.id === selectedChat)?.name}</h2>
             </div>
-            <div className="flex-grow p-4 overflow-y-auto">
-              {/* Messages would go here */}
-            </div>
+            <div className="flex-grow p-4 overflow-y-auto">{/* Messages would go here */}</div>
             <div className="p-4 border-t border-gray-200">
               <div className="flex items-center">
                 <Paperclip className="w-6 h-6 text-gray-500 mr-2 cursor-pointer" />
@@ -93,7 +91,7 @@ const TelegramUI = () => {
       {/* Sliding sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out`}
       >
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -123,12 +121,6 @@ const TelegramUI = () => {
       </div>
 
       {/* Overlay */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
-          onClick={toggleSidebar}
-        ></div>
-      )}
     </div>
   );
 };
