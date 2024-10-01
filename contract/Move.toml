@@ -1,12 +1,11 @@
 [package]
-name = "MessageBoard"
-version = "1.0.0"
-authors = []
+   name = "MessagingPayment"
+   version = "1.0.0"
+   authors = []
 
 [addresses]
-message_board_addr = "0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f"
+   messaging_payment_addr = "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435"
 
 [dependencies]
-AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "main", subdir = "aptos-move/framework/aptos-framework" }
-
-[dev-dependencies]
+   AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "aptos-node-v1.10.1", subdir = "aptos-move/framework/aptos-framework" }
+   

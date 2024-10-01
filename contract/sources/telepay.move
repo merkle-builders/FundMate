@@ -1,4 +1,4 @@
-module 0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f::messaging_payment { // Deployer's address in global storage
+module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messaging_payment { // Deployer's address in global storage
     use std::vector;
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::AptosCoin;
