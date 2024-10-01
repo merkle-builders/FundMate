@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Search, Send, Paperclip, Mic, Menu, X, Settings, Bookmark, Phone, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const TelegramUI = () => {
+const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -65,7 +66,10 @@ const TelegramUI = () => {
             <div className="flex-grow p-4 overflow-y-auto">{/* Messages would go here */}</div>
             <div className="p-4 border-t border-gray-200">
               <div className="flex items-center">
-                <Paperclip className="w-6 h-6 text-gray-500 mr-2 cursor-pointer" />
+                <div className="flex gap-4">
+                  <Button className="rounded-2xl">Pay</Button>
+                  <Button className="rounded-2xl">Request Payment</Button>
+                </div>
                 <input
                   type="text"
                   value={message}
