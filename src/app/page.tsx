@@ -46,7 +46,7 @@ function App() {
             ) : (
               <>
                 <CardHeader>
-                  <CardTitle>Welcome to Movepay</CardTitle>
+                  <CardTitle>Welcome to FundMate</CardTitle>
                 </CardHeader>
                 <div className="flex justify-center mt-80">
                   <WalletBaselogin />

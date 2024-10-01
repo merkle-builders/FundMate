@@ -72,7 +72,7 @@ export function WalletBaselogin() {
   ) : (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button>Login to Movepay</Button>
+        <Button>Login to FundMate</Button>
       </DialogTrigger>
       <ConnectWalletDialog close={closeDialog} />
     </Dialog>
