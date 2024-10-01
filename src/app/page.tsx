@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { motion } from "framer-motion";
@@ -10,11 +10,13 @@ import { Header } from "@/components/Header";
 // import { MessageBoard } from "@/components/MessageBoard";
 // Internal Components
 import { CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
   const { connected, wallet } = useWallet();
+
   const router = useRouter();
 
   useEffect(() => {
