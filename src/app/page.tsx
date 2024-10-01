@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     if (connected) {
-      router.push("/application");
+      router.push("/application/tg");
     }
   }, [connected]);
   console.log("connect status is:", connected);

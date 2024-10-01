@@ -11,11 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const { disconnect } = useWallet();
 
   const chats = [
     { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
@@ -41,11 +44,13 @@ const TelegramUI = ({}) => {
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
-              <DropdownMenuItem onClick={() => router.push("/application/profile")}>Profile</DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer" onClick={() => router.push("/application/profile")}>
+                Profile
+              </DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuItem disabled>API</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => disconnect()}>Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
