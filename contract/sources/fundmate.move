@@ -139,6 +139,12 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
         vector::push_back(&mut recipient_conversation.messages, recipient_message);
     }
 
+    // Helper function to get user profile
+    public fun get_user_profile(account_address: address): UserProfile acquires UserProfile {
+        assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
+        borrow_global<UserProfile>(account_address)
+    }
+
     // Helper function to get friends list
     public fun get_friends(account_address: address): vector<address> acquires UserProfile {
         assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
