@@ -1,5 +1,5 @@
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
-import { MESSAGE_MODULE_ADDRESS } from "@/core/constants";
+// import { MESSAGE_MODULE_ADDRESS } from "@/core/constants";
 
 export type CreateIdArguments = {
   userName: string;
