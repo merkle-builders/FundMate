@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Profileicon() {
+export default function ProfileIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.6 99.514" height={90} width={90}>
       <path d="M39.8 46.259c-12.647 0-22.937-10.29-22.937-22.937S27.153.386 39.8.386c12.648 0 22.937 10.289 22.937 22.937S52.448 46.259 39.8 46.259zm0-41.873c-10.441 0-18.937 8.495-18.937 18.937 0 10.442 8.495 18.937 18.937 18.937 10.442 0 18.937-8.495 18.937-18.937 0-10.442-8.495-18.937-18.937-18.937z" />
