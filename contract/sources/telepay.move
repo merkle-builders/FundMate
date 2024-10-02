@@ -8,7 +8,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
 
 
     struct UserProfile has key {
-        user_name: vector<u8>,  // In move every string is represented by an array of 8 bits per character 
+        user_name: vector<u8>,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
     }
@@ -20,14 +20,14 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
 
     struct Message has store, drop, copy {
         sender: address,
-        content: vector<u8>, // In move every string is represented by an array of 8 bits per character 
+        content: vector<u8>,
         timestamp: u64,
     }
 
     struct Payment has store, drop, copy {
         sender: address,
         amount: u64,
-        note: vector<u8>, // In move every string is represented by an array of 8 bits per character 
+        note: vector<u8>,
         timestamp: u64,
     }
 
