@@ -8,16 +8,20 @@ export type CreateIdArguments = {
 export const createId = (args: CreateIdArguments): InputTransactionData => {
   const { userName } = args;
 
-  // Convert the string to hex
-  const userNameHex = Buffer.from(userName, "utf8").toString("hex");
+  // Convert the string to a Uint8Array
+  const encoder = new TextEncoder();
+  const userNameBytes = encoder.encode(userName);
 
-  console.log(userNameHex);
+  // Convert the Uint8Array to an array of numbers
+  const userNameArray = Array.from(userNameBytes);
+
+  console.log("userName as array:", userNameArray);
 
   return {
     data: {
-      function: `${MESSAGE_MODULE_ADDRESS}::messaging_payment::create_id`,
+      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messaging_payment::create_id",
       functionArguments: [
-        `0x${userNameHex}`, // Pass the hex string as an argument
+        `0x${userNameArray}`, // Pass the hex string as an argument
       ],
       typeArguments: [],
     },

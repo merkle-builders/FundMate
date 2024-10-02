@@ -8,8 +8,6 @@ export const LocalStorageKeys = {
   keylessAccounts: "@aptos-connect/keyless-accounts",
 };
 
-export const devnetClient = new Aptos(new AptosConfig({ network: Network.DEVNET }));
-
 export const testnetClient = new Aptos(new AptosConfig({ network: Network.TESTNET }));
 
 export const GOOGLE_CLIENT_ID = "306513074110-tci597uh8358u7o9il0au1ucok2ib787.apps.googleusercontent.com";

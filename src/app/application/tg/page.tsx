@@ -152,7 +152,7 @@ const TelegramUI = ({}) => {
         )}
       </div>
 
-      {/* Sliding sidebar */}
+      {/* Modal Popup for username Setup */}
       <Dialog open={isShowModal}>
         <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px]">
           <DialogHeader>
@@ -179,7 +179,6 @@ const TelegramUI = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {/* Overlay */}
     </div>
   );
 };

@@ -38,7 +38,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
 
-    public fun create_id(account: &signer, user_name: vector<u8>) {
+    public entry fun create_id(account: &signer, user_name: vector<u8>) {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
