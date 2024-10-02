@@ -8,11 +8,16 @@ export type CreateIdArguments = {
 export const createId = (args: CreateIdArguments): InputTransactionData => {
   const { userName } = args;
 
+  // Convert the string to hex
+  const userNameHex = Buffer.from(userName, "utf8").toString("hex");
+
+  console.log(userNameHex);
+
   return {
     data: {
       function: `${MESSAGE_MODULE_ADDRESS}::messaging_payment::create_id`,
       functionArguments: [
-        Array.from(new TextEncoder().encode(userName)), // Convert string to Uint8Array
+        `0x${userNameHex}`, // Pass the hex string as an argument
       ],
       typeArguments: [],
     },
