@@ -21,14 +21,14 @@ export default function Profile() {
     const fetchUsername = async () => {
       if (account) {
         setLoading(true);
-        const fetchedUsername = await getUsername("0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f"); // Get the username
+        const fetchedUsername = await getUsername(account?.address); 
         setUsername(fetchedUsername ?? "");
         setLoading(false);
       }
     };
 
-    fetchUsername(); // Call the async function
-  }, [account]); // Only re-run the effect if account changes
+    fetchUsername(); 
+  }, [account]);
 
   return (
     <div className="container mx-auto px-4 py-8">
