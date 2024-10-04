@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Linechart } from "@/components/ui/linechart";
 import ProfileIcon from "@/components/ui/icons/profileicon";
