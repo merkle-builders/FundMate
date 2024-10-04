@@ -175,6 +175,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(exists<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435), 0);
         *&borrow_global<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435).users
     }
+    
     #[view]
     // Helper function to get friends list
     public fun get_friends(account_address: address): vector<address> acquires UserProfile {

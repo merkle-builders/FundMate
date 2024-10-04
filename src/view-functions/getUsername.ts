@@ -1,11 +1,10 @@
 import { testnetClient } from "../core/constants";
 
 export const getUsername = async (accountAddress: string) => {
-
   function hexToAsciiString(hex: string) {
-    hex = hex.replace(/^0x/, '');
+    hex = hex.replace(/^0x/, "");
 
-    let asciiStr = '';
+    let asciiStr = "";
     for (let i = 0; i < hex.length; i += 2) {
       const charCode = parseInt(hex.substr(i, 2), 16);
       asciiStr += String.fromCharCode(charCode);
@@ -15,9 +14,9 @@ export const getUsername = async (accountAddress: string) => {
   }
 
   function parseUsernameFromAscii(asciiStr: string) {
-    const parts = asciiStr.split(',');
+    const parts = asciiStr.split(",");
 
-    return parts.map((part) => String.fromCharCode(parseInt(part))).join('');
+    return parts.map((part) => String.fromCharCode(parseInt(part))).join("");
   }
 
   try {
@@ -25,7 +24,7 @@ export const getUsername = async (accountAddress: string) => {
 
     const result = await testnetClient.view({
       payload: {
-        function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messaging_payment::get_username",
+        function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmate::get_username",
         typeArguments: [],
         functionArguments: [accountAddress],
       },

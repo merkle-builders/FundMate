@@ -54,7 +54,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
 
- public entry fun create_id(account: &signer, user_name: String) acquires AllUsers {
+    public entry fun create_id(account: &signer, user_name: String) acquires AllUsers {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
@@ -71,7 +71,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         let all_users = borrow_global_mut<AllUsers>(module_addr);
         vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name });
     }
-    
+
 
     public fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
         let signer_address = signer::address_of(account);
@@ -175,6 +175,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(exists<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435), 0);
         *&borrow_global<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435).users
     }
+    
     #[view]
     // Helper function to get friends list
     public fun get_friends(account_address: address): vector<address> acquires UserProfile {

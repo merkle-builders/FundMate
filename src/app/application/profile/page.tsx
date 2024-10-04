@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Linechart } from "@/components/ui/linechart";
 import ProfileIcon from "@/components/ui/icons/profileicon";
@@ -15,20 +15,20 @@ import { useEffect, useState } from "react";
 export default function Profile() {
   const { account } = useWallet();
   const router = useRouter();
-  const [username, setUsername] = useState(""); 
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsername = async () => {
       if (account) {
         setLoading(true);
-        const fetchedUsername = await getUsername(account?.address); 
+        const fetchedUsername = await getUsername(account?.address);
         setUsername(fetchedUsername ?? "");
         setLoading(false);
       }
     };
 
-    fetchUsername(); 
+    fetchUsername();
   }, [account]);
 
   return (

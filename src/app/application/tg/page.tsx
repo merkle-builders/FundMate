@@ -24,19 +24,40 @@ import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/message-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
+import { getAllUsers } from "@/view-functions/getAllUsers";
+import { sendPayment } from "@/message-functions/sendPayment";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
+  const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
+  const [isSearchList, setIsSearchList] = useState<any[]>([]);
+  const [isFriends, setIsFriends] = useState<[]>([]);
 
-  const { account } = useWallet();
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { account, signAndSubmitTransaction, disconnect } = useWallet();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      const allUsers = await getAllUsers();
+      setIsSearchList([...isSearchList, ...allUsers]);
+      console.log("the complete search list:", isSearchList);
+    };
+    fetchAllUsers();
+  });
+
   useEffect(() => {
     const fetchUsername = async () => {
       if (account) {
         const fetchedUsername = await getUsername(account?.address);
-        setUserName(fetchedUsername ?? ""); // Set the username or an empty string if not found
+        setUserName(fetchedUsername ?? ""); // Set username or an empty string if not found
         setIsShowModal(!fetchedUsername); // Show modal if username is not found (null or empty)
       }
     };
@@ -45,8 +66,6 @@ const TelegramUI = ({}) => {
   }, [account]); // Add account to the dependency array to rerun when account changes
 
   console.log("showmodal status:", isShowModal);
-
-  const { disconnect, signAndSubmitTransaction } = useWallet();
 
   const handleCreateProfile = async () => {
     if (!userName) {
@@ -65,13 +84,39 @@ const TelegramUI = ({}) => {
     }
   };
 
+  const handleSendPayment = async () => {
+    if (!recipient || !amount) {
+      alert("Please fill in all the required fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const paymentData = sendPayment({
+        recipient,
+        amount: parseInt(amount, 10),
+        note,
+      });
+
+      console.log("Payment data:", paymentData);
+
+      // Sign and submit the transaction using the wallet
+      const result = await signAndSubmitTransaction(paymentData);
+      console.log("Payment successful:", result);
+
+      setIsShowPayModal(false); // Close the modal on success
+    } catch (error) {
+      console.error("Payment failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const chats = [
     { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
     { id: 2, name: "Jane Smith", lastMessage: "Did you see the news?", time: "09:15 AM" },
     { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
   ];
-
-  const router = useRouter();
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -138,7 +183,9 @@ const TelegramUI = ({}) => {
             <div className="p-4 border-t border-gray-200">
               <div className="flex items-center">
                 <div className="flex gap-4">
-                  <Button className="rounded-2xl">Pay</Button>
+                  <Button className="rounded-2xl" onClick={() => setIsShowPayModal(true)}>
+                    Pay
+                  </Button>
                   <Button className="rounded-2xl">Request Payment</Button>
                 </div>
                 <input
@@ -186,6 +233,52 @@ const TelegramUI = ({}) => {
           <DialogFooter>
             <Button type="submit" onClick={handleCreateProfile}>
               Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Payment */}
+      <Dialog open={isShowPayModal}>
+        <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Send a Payment</DialogTitle>
+            <DialogDescription>Complete the payment details and confirm the transaction.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="recipient" className="text-right">
+                Recipient
+              </Label>
+              <Input
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                id="recipient"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="amount" className="text-right">
+                Amount
+              </Label>
+              <Input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                id="amount"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="note" className="text-right">
+                Note
+              </Label>
+              <Input value={note} onChange={(e) => setNote(e.target.value)} id="note" className="col-span-3" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleSendPayment} disabled={loading}>
+              {loading ? "Sending..." : "Send Payment"}
             </Button>
           </DialogFooter>
         </DialogContent>
