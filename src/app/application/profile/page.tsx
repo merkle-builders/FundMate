@@ -30,7 +30,7 @@ export default function Profile() {
             <div className="flex flex-col items-center mb-6 w-24 h-24">
               <ProfileIcon />
               <h2 className="text-xl font-semibold">
-                {getUsername("0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f")}
+                {getUsername("0xa69519bc090f23d48999ea0d802db339df1109fc51e41fd59330a29a745e7b45")}
               </h2>
             </div>
 

@@ -6,7 +6,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
     use std::table::{Self, Table};
     use std::signer;
 
-
     struct UserProfile has key {
         user_name: vector<u8>,
         friends: vector<address>,

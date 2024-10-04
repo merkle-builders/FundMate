@@ -1,7 +1,31 @@
-import { MoveValue } from "@aptos-labs/ts-sdk";
 import { testnetClient } from "../core/constants";
 
 export const getUsername = async (accountAddress: string) => {
+
+  // Step 1: Convert hex string to readable string (e.g., "0x109,105,104,105,114")
+  function hexToAsciiString(hex: string) {
+    // Remove the '0x' prefix if present
+    hex = hex.replace(/^0x/, '');
+
+    // Convert hex-encoded string to a regular ASCII string
+    let asciiStr = '';
+    for (let i = 0; i < hex.length; i += 2) {
+      const charCode = parseInt(hex.substr(i, 2), 16);
+      asciiStr += String.fromCharCode(charCode);
+    }
+
+    return asciiStr;
+  }
+
+  // Step 2: Convert the comma-separated decimal string to an actual username
+  function parseUsernameFromAscii(asciiStr: string) {
+    // Split by commas
+    const parts = asciiStr.split(',');
+
+    // Convert each part from decimal to an ASCII character
+    return parts.map((part) => String.fromCharCode(parseInt(part))).join('');
+  }
+
   try {
     console.log(`Attempting to get username for address: ${accountAddress}`);
 
@@ -22,19 +46,18 @@ export const getUsername = async (accountAddress: string) => {
     }
 
     const userNameHex = result[0] as string;
-    console.log("username in hex is:", userNameHex);
+    console.log("Username in hex is:", userNameHex);
 
-    // Remove the '0x' prefix
-    const hexWithoutPrefix = userNameHex.slice(2);
-    console.log("usernamehexeprefix:", hexWithoutPrefix);
-    const byteValues = hexWithoutPrefix.split(",").map(Number); // Convert the string numbers to an array of numbers
-    console.log("value in bytes:", byteValues);
-    // Convert the array of numbers to a string
-    const decodedUserName = byteValues.map((byte) => String.fromCharCode(byte)).join("");
+    // Step 1: Convert hex to ASCII string (e.g., "0x109,105,104,105,114")
+    const asciiString = hexToAsciiString(userNameHex);
+    console.log("Decoded ASCII string:", asciiString);
 
+    // Step 2: Parse the actual username from the ASCII string
+    const decodedUserName = parseUsernameFromAscii(asciiString.slice(2));
     console.log("User Name:", decodedUserName);
+
     return decodedUserName;
   } catch (err) {
-    console.log("something gone wrong:", err);
+    console.log("something went wrong:", err);
   }
 };
