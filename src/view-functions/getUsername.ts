@@ -1,22 +1,40 @@
-// import { AptosClient } from "aptos";
+import { MoveValue } from "@aptos-labs/ts-sdk";
+import { testnetClient } from "../core/constants";
 
-// const client = new AptosClient("https://fullnode.testnet.aptoslabs.com"); // Replace with the appropriate network
+export const getUsername = async (accountAddress: string) => {
+  try {
+    console.log(`Attempting to get username for address: ${accountAddress}`);
 
-// export async function getUsername(accountAddress: string) {
-//   try {
-//     const result = await client.view({
-//       function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messaging_payment::get_username",
-//       type_arguments: [],
-//       arguments: [accountAddress],
-//     });
+    const result = await testnetClient.view({
+      payload: {
+        function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messaging_payment::get_username",
+        typeArguments: [],
+        functionArguments: [accountAddress],
+      },
+    });
 
-//     // The result is a vector<u8>, so we need to convert it back to a string
-//     const userNameBytes = result[0]; // result will be an array, first element is the username in bytes
-//     const userName = new TextDecoder().decode(new Uint8Array(userNameBytes));
+    console.log("Raw result from view function:", result);
 
-//     console.log("Username:", userName);
-//     return userName;
-//   } catch (error) {
-//     console.error("Error retrieving username:", error);
-//   }
-// }
+    // Ensure result is an array with a single element
+    if (!result || !Array.isArray(result) || result.length === 0 || typeof result[0] !== "string") {
+      console.error("Invalid user name data received.");
+      return null;
+    }
+
+    const userNameHex = result[0] as string;
+    console.log("username in hex is:", userNameHex);
+
+    // Remove the '0x' prefix
+    const hexWithoutPrefix = userNameHex.slice(2);
+    console.log("usernamehexeprefix:", hexWithoutPrefix);
+    const byteValues = hexWithoutPrefix.split(",").map(Number); // Convert the string numbers to an array of numbers
+    console.log("value in bytes:", byteValues);
+    // Convert the array of numbers to a string
+    const decodedUserName = byteValues.map((byte) => String.fromCharCode(byte)).join("");
+
+    console.log("User Name:", decodedUserName);
+    return decodedUserName;
+  } catch (err) {
+    console.log("something gone wrong:", err);
+  }
+};
