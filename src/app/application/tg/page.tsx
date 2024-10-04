@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/message-functions/createID";
+import { getUsername } from "@/view-functions/getUsername";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -30,9 +31,19 @@ const TelegramUI = ({}) => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
 
+  const { account } = useWallet();
   useEffect(() => {
-    setIsShowModal(true);
-  }, []);
+    const fetchUsername = async () => {
+      if (account) {
+        const fetchedUsername = await getUsername(account?.address);
+        setUserName(fetchedUsername ?? ""); // Set the username or an empty string if not found
+        setIsShowModal(!fetchedUsername); // Show modal if username is not found (null or empty)
+      }
+    };
+
+    fetchUsername(); // Call fetchUsername when the component mounts or account changes
+  }, [account]); // Add account to the dependency array to rerun when account changes
+
   console.log("showmodal status:", isShowModal);
 
   const { disconnect, signAndSubmitTransaction } = useWallet();
