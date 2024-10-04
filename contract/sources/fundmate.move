@@ -5,9 +5,10 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
     use aptos_framework::timestamp;
     use std::table::{Self, Table};
     use std::signer;
+    use std::string::String;
 
     struct UserProfile has key {
-        user_name: vector<u8>,
+        user_name: String,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
     }
@@ -19,14 +20,14 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
 
     struct Message has store, drop, copy {
         sender: address,
-        content: vector<u8>,
+        content: String,
         timestamp: u64,
     }
 
     struct Payment has store, drop, copy {
         sender: address,
         amount: u64,
-        note: vector<u8>,
+        note: String,
         timestamp: u64,
     }
 
@@ -37,7 +38,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
 
-    public entry fun create_id(account: &signer, user_name: vector<u8>) {
+    public entry fun create_id(account: &signer, user_name: String) {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
@@ -70,7 +71,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
         account: &signer,
         recipient: address,
         amount: u64,
-        note: vector<u8>
+        note: String
     ) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -108,7 +109,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
         vector::push_back(&mut recipient_conversation.payments, recipient_payment);
     }
 
-    public fun send_message(account: &signer, recipient: address, content: vector<u8>) acquires UserProfile {
+    public fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
         assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
@@ -140,7 +141,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::messa
 
     #[view]
     // Helper function to get user profile
-    public fun get_username(account_address: address): vector<u8> acquires UserProfile {
+    public fun get_username(account_address: address): String acquires UserProfile {
         assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
         let user_profile = borrow_global<UserProfile>(account_address);
         // Return the user_name directly
