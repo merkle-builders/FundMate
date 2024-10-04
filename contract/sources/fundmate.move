@@ -67,7 +67,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         }
     }
 
-    public fun send_payment(
+    public entry fun send_payment(
         account: &signer,
         recipient: address,
         amount: u64,
