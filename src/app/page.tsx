@@ -15,18 +15,19 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { WalletBaselogin } from "@/components/WalletBaselogin";
 
 function App() {
-  const { connected, wallet } = useWallet();
+  const { account, connected, wallet } = useWallet();
 
   const router = useRouter();
 
   useEffect(() => {
     if (connected) {
+      console.log("connected: ", account?.address);
       router.push("/application/tg");
     }
   }, [connected]);
   console.log("connect status is:", connected);
 
-  console.log("wallet info", wallet);
+  console.log("wallet info", wallet?.name);
 
   return (
     <>

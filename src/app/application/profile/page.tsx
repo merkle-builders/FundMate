@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { Linechart } from "@/components/ui/linechart";
 import ProfileIcon from "@/components/ui/icons/profileicon";
@@ -10,10 +9,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getUsername } from "@/view-functions/getUsername";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
   const { account } = useWallet();
   const router = useRouter();
+  const [username, setUsername] = useState(""); 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (account) {
+        setLoading(true);
+        const fetchedUsername = await getUsername("0x6623fc72d1afe4f0b80338ebf99a2453d1e04c7f40f648bf425514785745701f"); // Get the username
+        setUsername(fetchedUsername ?? "");
+        setLoading(false);
+      }
+    };
+
+    fetchUsername(); // Call the async function
+  }, [account]); // Only re-run the effect if account changes
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -30,10 +45,9 @@ export default function Profile() {
             <div className="flex flex-col items-center mb-6 w-24 h-24">
               <ProfileIcon />
               <h2 className="text-xl font-semibold">
-                {getUsername("0xa69519bc090f23d48999ea0d802db339df1109fc51e41fd59330a29a745e7b45")}
+                {loading ? "Loading..." : username || "Username not found"} {/* Display loading state or username */}
               </h2>
             </div>
-
             <div className="space-y-4 w-1/2">
               <div>
                 <Label className="font-semibold">Account Address</Label>
@@ -47,7 +61,7 @@ export default function Profile() {
                 <Label className="font-semibold">Name</Label>
                 <div className="flex items-center">
                   <User className="mr-2 h-4 w-4 text-gray-500" />
-                  <Input value="paul" disabled={true} />
+                  <Input value={username} disabled={true} />
                 </div>
               </div>
             </div>
