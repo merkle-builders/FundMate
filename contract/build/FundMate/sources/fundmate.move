@@ -7,15 +7,16 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     use std::signer;
     use std::string::String;
     
+    
     struct UserProfile has key {
-        user_name: String,
+        user_name: vector<u8>,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
     }
     
     struct UserInfo has store, drop, copy {
         address: address,
-        user_name: String,
+        user_name: vector<u8>,
     }
 
     struct AllUsers has key {
@@ -24,7 +25,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
 
     struct UserCreatedEvent has drop, store {
         user_address: address,
-        user_name: String,
+        user_name: vector<u8>,
     }
 
     struct Conversation has store {
@@ -53,7 +54,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
 
-    public entry fun create_id(account: &signer, user_name: String) acquires AllUsers {
+    public entry fun create_id(account: &signer, user_name: vector<u8>) acquires AllUsers {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
@@ -71,12 +72,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name });
     }
 
-    public entry fun initialize_all_users(account: &signer) {
-        let all_users = AllUsers {
-        users: vector::empty<UserInfo>(),
-        };
-        move_to(account, all_users);
-    }
     
     public fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
         let signer_address = signer::address_of(account);
@@ -111,6 +106,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         // Transfer AptosCoin
         let coins = coin::withdraw<AptosCoin>(account, amount);
         coin::deposit(recipient, coins);
+
         // Record the payment in both users' conversation records
         let payment = Payment {
             sender: signer_address,
@@ -167,7 +163,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
 
     #[view]
     // Helper function to get user profile
-    public fun get_username(account_address: address): String acquires UserProfile {
+    public fun get_username(account_address: address): vector<u8> acquires UserProfile {
         assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
         let user_profile = borrow_global<UserProfile>(account_address);
         // Return the user_name directly
