@@ -144,13 +144,13 @@ module std::fixed_point32 {
     /// Accessor for the raw u64 value. Other less common operations, such as
     /// adding or subtracting FixedPoint32 values, can be done using the raw
     /// values directly.
-    public fun get_raw_value(self: FixedPoint32): u64 {
-        self.value
+    public fun get_raw_value(num: FixedPoint32): u64 {
+        num.value
     }
 
     /// Returns true if the ratio is zero.
-    public fun is_zero(self: FixedPoint32): bool {
-        self.value == 0
+    public fun is_zero(num: FixedPoint32): bool {
+        num.value == 0
     }
 
     /// Returns the smaller of the two FixedPoint32 numbers.
@@ -216,27 +216,27 @@ module std::fixed_point32 {
     }
 
     /// Returns the largest integer less than or equal to a given number.
-    public fun floor(self: FixedPoint32): u64 {
-        self.value >> 32
+    public fun floor(num: FixedPoint32): u64 {
+        num.value >> 32
     }
     spec floor {
         pragma opaque;
         aborts_if false;
-        ensures result == spec_floor(self);
+        ensures result == spec_floor(num);
     }
-    spec fun spec_floor(self: FixedPoint32): u64 {
-        let fractional = self.value % (1 << 32);
+    spec fun spec_floor(val: FixedPoint32): u64 {
+        let fractional = val.value % (1 << 32);
         if (fractional == 0) {
-            self.value >> 32
+            val.value >> 32
         } else {
-            (self.value - fractional) >> 32
+            (val.value - fractional) >> 32
         }
     }
 
     /// Rounds up the given FixedPoint32 to the next largest integer.
-    public fun ceil(self: FixedPoint32): u64 {
-        let floored_num = floor(self) << 32;
-        if (self.value == floored_num) {
+    public fun ceil(num: FixedPoint32): u64 {
+        let floored_num = floor(num) << 32;
+        if (num.value == floored_num) {
             return floored_num >> 32
         };
         let val = ((floored_num as u128) + (1 << 32));
@@ -246,42 +246,42 @@ module std::fixed_point32 {
         pragma verify_duration_estimate = 120;
         pragma opaque;
         aborts_if false;
-        ensures result == spec_ceil(self);
+        ensures result == spec_ceil(num);
     }
-    spec fun spec_ceil(self: FixedPoint32): u64 {
-        let fractional = self.value % (1 << 32);
+    spec fun spec_ceil(val: FixedPoint32): u64 {
+        let fractional = val.value % (1 << 32);
         let one = 1 << 32;
         if (fractional == 0) {
-            self.value >> 32
+            val.value >> 32
         } else {
-            (self.value - fractional + one) >> 32
+            (val.value - fractional + one) >> 32
         }
     }
 
     /// Returns the value of a FixedPoint32 to the nearest integer.
-    public fun round(self: FixedPoint32): u64 {
-        let floored_num = floor(self) << 32;
+    public fun round(num: FixedPoint32): u64 {
+        let floored_num = floor(num) << 32;
         let boundary = floored_num + ((1 << 32) / 2);
-        if (self.value < boundary) {
+        if (num.value < boundary) {
             floored_num >> 32
         } else {
-            ceil(self)
+            ceil(num)
         }
     }
     spec round {
         pragma verify_duration_estimate = 120;
         pragma opaque;
         aborts_if false;
-        ensures result == spec_round(self);
+        ensures result == spec_round(num);
     }
-    spec fun spec_round(self: FixedPoint32): u64 {
-        let fractional = self.value % (1 << 32);
+    spec fun spec_round(val: FixedPoint32): u64 {
+        let fractional = val.value % (1 << 32);
         let boundary = (1 << 32) / 2;
         let one = 1 << 32;
         if (fractional < boundary) {
-            (self.value - fractional) >> 32
+            (val.value - fractional) >> 32
         } else {
-            (self.value - fractional + one) >> 32
+            (val.value - fractional + one) >> 32
         }
     }
 

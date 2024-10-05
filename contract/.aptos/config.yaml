@@ -7,3 +7,10 @@ profiles:
     account: caf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435
     rest_url: "https://fullnode.testnet.aptoslabs.com"
     faucet_url: "https://faucet.testnet.aptoslabs.com"
+  fundmate2:
+    network: Devnet
+    private_key: "0xbe640aa9ac0c0873e533f424312dfaf5cf4693941137d5b554068cbe1cf9b2c9"
+    public_key: "0x471bec054b0cec734c466e836c6777c96a548afa0a9e77344ee6e9ea9164a606"
+    account: 9c6de63fa50e13990ee51cbdc66efd250166706d674b110452b33669feb48565
+    rest_url: "https://fullnode.devnet.aptoslabs.com"
+    faucet_url: "https://faucet.devnet.aptoslabs.com"

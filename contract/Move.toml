@@ -4,7 +4,7 @@
    authors = []
 
 [addresses]
-   fundmate_addr = "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435"
+   fundmate_addr = "0x9c6de63fa50e13990ee51cbdc66efd250166706d674b110452b33669feb48565"
 
 [dependencies]
    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "aptos-node-v1.10.1", subdir = "aptos-move/framework/aptos-framework" }
