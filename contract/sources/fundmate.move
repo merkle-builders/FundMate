@@ -4,15 +4,20 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     use aptos_framework::aptos_coin::AptosCoin;
     use aptos_framework::timestamp;
     use aptos_framework::event;
+    use aptos_framework::account;
     use std::table::{Self, Table};
     use std::signer;
     use std::string::String;
     
     // Structs
     struct UserProfile has key {
-        user_name: String, // Changed from vector<u8> to String for better readability
+        user_name: String,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
+        user_created_events: event::EventHandle<UserCreatedEvent>,
+        friend_added_events: event::EventHandle<FriendAddedEvent>,
+        payment_sent_events: event::EventHandle<PaymentSentEvent>,
+        message_sent_events: event::EventHandle<MessageSentEvent>,
     }
     
     struct UserInfo has store, drop, copy {
@@ -43,22 +48,26 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     }
 
     // Events
+    #[event]
     struct UserCreatedEvent has drop, store {
         user_address: address,
         user_name: String,
     }
 
+    #[event]
     struct FriendAddedEvent has drop, store {
         user_address: address,
         friend_address: address,
     }
 
+    #[event]
     struct PaymentSentEvent has drop, store {
         sender: address,
         recipient: address,
         amount: u64,
     }
 
+    #[event]
     struct MessageSentEvent has drop, store {
         sender: address,
         recipient: address,
@@ -76,7 +85,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         move_to(account, AllUsers { users: vector::empty() });
     }
 
-    public entry fun create_id(account: &signer, user_name: String) acquires AllUsers {
+    public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
@@ -84,6 +93,10 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
             user_name: user_name,
             friends: vector::empty<address>(),
             conversations: table::new(),
+            user_created_events: account::new_event_handle<UserCreatedEvent>(account),
+            friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
+            payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
+            message_sent_events: account::new_event_handle<MessageSentEvent>(account),
         };
 
         move_to(account, user_profile);
@@ -93,7 +106,8 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name: user_name });
 
         // Emit event
-        event::emit(UserCreatedEvent { user_address: signer_address, user_name: user_name });
+        let user_profile = borrow_global_mut<UserProfile>(signer_address);
+        event::emit_event(&mut user_profile.user_created_events, UserCreatedEvent { user_address: signer_address, user_name: user_name });
     }
     
     public entry fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
@@ -111,11 +125,11 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
             });
 
             // Emit event
-            event::emit(FriendAddedEvent { user_address: signer_address, friend_address });
+            event::emit_event(&mut user_profile.friend_added_events, FriendAddedEvent { user_address: signer_address, friend_address });
         }
     }
 
-    public entry fun send_payment(
+     public entry fun send_payment(
         account: &signer,
         recipient: address,
         amount: u64,
@@ -126,8 +140,8 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
         assert!(signer_address != recipient, E_SELF_OPERATION_NOT_ALLOWED);
 
-        let user_profile = borrow_global_mut<UserProfile>(signer_address);
-        assert!(vector::contains(&user_profile.friends, &recipient), E_NOT_FRIEND);
+        let sender_profile = borrow_global_mut<UserProfile>(signer_address);
+        assert!(vector::contains(&sender_profile.friends, &recipient), E_NOT_FRIEND);
 
         // Transfer AptosCoin
         let coins = coin::withdraw<AptosCoin>(account, amount);
@@ -141,15 +155,16 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
             timestamp: timestamp::now_seconds(),
         };
 
-        let sender_conversation = table::borrow_mut(&mut user_profile.conversations, recipient);
+        let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.payments, payment);
 
+        // Emit event
+        event::emit_event(&mut sender_profile.payment_sent_events, PaymentSentEvent { sender: signer_address, recipient, amount });
+
+        // Update recipient's conversation
         let recipient_profile = borrow_global_mut<UserProfile>(recipient);
         let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
         vector::push_back(&mut recipient_conversation.payments, payment);
-
-        // Emit event
-        event::emit(PaymentSentEvent { sender: signer_address, recipient, amount });
     }
 
     public entry fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
@@ -157,8 +172,8 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
         assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
 
-        let user_profile = borrow_global_mut<UserProfile>(signer_address);
-        assert!(vector::contains(&user_profile.friends, &recipient), E_NOT_FRIEND);
+        let sender_profile = borrow_global_mut<UserProfile>(signer_address);
+        assert!(vector::contains(&sender_profile.friends, &recipient), E_NOT_FRIEND);
 
         let message = Message {
             sender: signer_address,
@@ -167,16 +182,16 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         };
 
         // Add message to sender's conversation
-        let sender_conversation = table::borrow_mut(&mut user_profile.conversations, recipient);
+        let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.messages, message);
+
+        // Emit event
+        event::emit_event(&mut sender_profile.message_sent_events, MessageSentEvent { sender: signer_address, recipient });
 
         // Add message to recipient's conversation
         let recipient_profile = borrow_global_mut<UserProfile>(recipient);
         let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
         vector::push_back(&mut recipient_conversation.messages, message);
-
-        // Emit event
-        event::emit(MessageSentEvent { sender: signer_address, recipient });
     }
 
     #[view]
