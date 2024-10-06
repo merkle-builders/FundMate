@@ -105,7 +105,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
         vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name: user_name });
 
-        // Emit event
         let user_profile = borrow_global_mut<UserProfile>(signer_address);
         event::emit_event(&mut user_profile.user_created_events, UserCreatedEvent { user_address: signer_address, user_name: user_name });
     }
@@ -124,7 +123,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
                 payments: vector::empty(),
             });
 
-            // Emit event
             event::emit_event(&mut user_profile.friend_added_events, FriendAddedEvent { user_address: signer_address, friend_address });
         }
     }
@@ -158,7 +156,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.payments, payment);
 
-        // Emit event
         event::emit_event(&mut sender_profile.payment_sent_events, PaymentSentEvent { sender: signer_address, recipient, amount });
 
         // Update recipient's conversation
@@ -185,7 +182,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.messages, message);
 
-        // Emit event
         event::emit_event(&mut sender_profile.message_sent_events, MessageSentEvent { sender: signer_address, recipient });
 
         // Add message to recipient's conversation
