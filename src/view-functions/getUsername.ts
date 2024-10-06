@@ -24,7 +24,7 @@ export const getUsername = async (accountAddress: string) => {
 
     const result = await testnetClient.view({
       payload: {
-        function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmate::get_username",
+        function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev1::get_username",
         typeArguments: [],
         functionArguments: [accountAddress],
       },
