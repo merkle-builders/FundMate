@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Search, Send, Mic, Menu } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Search, Send, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,16 +26,18 @@ import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { sendPayment } from "@/entry-functions/sendPayment";
-import { error } from "console";
+import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
+import { ChatInput } from "@/components/ui/chat/chat-input";
+import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 
-const TelegramUI = ({}) => {
+const TelegramUI = ({ }) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
   const [isSearchList, setIsSearchList] = useState<any[]>([]);
-  // const [isFriends, setIsFriends] = useState<[]>([]);
+  const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
 
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
@@ -44,29 +46,33 @@ const TelegramUI = ({}) => {
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       const allUsers = await getAllUsers();
       setIsSearchList([...isSearchList, ...allUsers]);
-      console.log("the complete search list:", isSearchList);
     };
     fetchAllUsers();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const fetchUsername = async () => {
       if (account) {
         const fetchedUsername = await getUsername(account?.address);
-        setUserName(fetchedUsername ?? ""); 
-        setIsShowModal(!fetchedUsername); 
+        setUserName(fetchedUsername ?? "");
+        setIsShowModal(!fetchedUsername);
       }
     };
 
     fetchUsername();
-  }, [account]); 
+  }, [account]);
 
-  console.log("showmodal status:", isShowModal);
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
 
   const handleCreateProfile = async () => {
     if (!userName) {
@@ -78,10 +84,8 @@ const TelegramUI = ({}) => {
       const transaction = createId({ userName });
       const result = await signAndSubmitTransaction(transaction);
       console.log("Transaction submitted:", result);
-      // Handle successful profile creation
     } catch (error) {
       console.error("Error creating profile:", error);
-      // Handle error
     }
   };
 
@@ -99,19 +103,29 @@ const TelegramUI = ({}) => {
         note,
       });
 
-      console.log("Payment data:", paymentData);
-
-      // Sign and submit the transaction using the wallet
       const result = await signAndSubmitTransaction(paymentData);
       console.log("Payment successful:", result);
 
-      setIsShowPayModal(false); 
+      setIsShowPayModal(false);
     } catch (error) {
       console.error("Payment failed:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("inside")
+    e.preventDefault();
+    if (message.trim()) {
+      setChatMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]);
+      setMessage("");
+    }
+  };
+
+  useEffect(() => {
+    console.log(selectedChat);
+  }, [selectedChat])
 
   const chats = [
     { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
@@ -130,7 +144,6 @@ const TelegramUI = ({}) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
               <DropdownMenuItem className="hover:cursor-pointer" onClick={() => router.push("/application/profile")}>
                 Profile
               </DropdownMenuItem>
@@ -154,9 +167,8 @@ const TelegramUI = ({}) => {
           {chats.map((chat) => (
             <div
               key={chat.id}
-              className={`p-4 hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${
-                selectedChat === chat.id ? "bg-blue-100" : ""
-              }`}
+              className={`p-4 hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${selectedChat === chat.id ? "bg-blue-100" : ""
+                }`}
               onClick={() => setSelectedChat(chat.id)}
             >
               <div className="flex items-center">
@@ -180,28 +192,34 @@ const TelegramUI = ({}) => {
               <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
               <h2 className="font-semibold">{chats.find((chat) => chat.id === selectedChat)?.name}</h2>
             </div>
-            <div className="flex-grow p-4 overflow-y-auto">{/* Messages would go here */}</div>
+            <ChatMessageList ref={messagesRef} className="flex-grow p-4 overflow-y-auto">
+              {chatMessages.map((msg, index) => (
+                <ChatBubble key={index} variant={msg.role === "user" ? "sent" : "received"}>
+                  <ChatBubbleAvatar src="" fallback={msg.role === "user" ? "👦" : "👧"} />
+                  <ChatBubbleMessage>{msg.content}</ChatBubbleMessage>
+                </ChatBubble>
+              ))}
+            </ChatMessageList>
             <div className="p-4 border-t border-gray-200">
               <div className="flex items-center">
-                <div className="flex gap-4">
+                <div className="flex gap-4 mb-4">
                   <Button className="rounded-2xl" onClick={() => setIsShowPayModal(true)}>
                     Pay
                   </Button>
                   <Button className="rounded-2xl">Request Payment</Button>
                 </div>
-                <input
-                  type="text"
+              </div>
+              <form onSubmit={handleSendMessage} className="flex items-center">
+                <Input
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Write a message..."
                   className="flex-grow px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
-                {message ? (
-                  <Send className="w-6 h-6 text-blue-500 ml-2 cursor-pointer" />
-                ) : (
-                  <Mic className="w-6 h-6 text-gray-500 ml-2 cursor-pointer" />
-                )}
-              </div>
+                <Button type="submit" className="ml-2">
+                  <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
+                </Button>
+              </form>
             </div>
           </>
         ) : (
