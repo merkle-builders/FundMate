@@ -1,4 +1,4 @@
-module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmate {
+module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev1 {
     use std::vector;
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::AptosCoin;
