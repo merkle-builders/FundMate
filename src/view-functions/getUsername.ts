@@ -1,19 +1,9 @@
 import { testnetClient } from "../core/constants";
 
 export const getUsername = async (accountAddress: string) => {
-  function hexToAsciiString(hex: string) {
-    hex = hex.replace(/^0x/, "");
-
-    let asciiStr = "";
-    for (let i = 0; i < hex.length; i += 2) {
-      const charCode = parseInt(hex.substr(i, 2), 16);
-      asciiStr += String.fromCharCode(charCode);
-    }
-
-    return asciiStr;
-  }
-
   function parseUsernameFromAscii(asciiStr: string) {
+    asciiStr = asciiStr.slice(2);
+
     const parts = asciiStr.split(",");
 
     return parts.map((part) => String.fromCharCode(parseInt(part))).join("");
@@ -40,10 +30,7 @@ export const getUsername = async (accountAddress: string) => {
     const userNameHex = result[0] as string;
     console.log("Username in hex is:", userNameHex);
 
-    const asciiString = hexToAsciiString(userNameHex);
-    console.log("Decoded ASCII string:", asciiString);
-
-    const decodedUserName = parseUsernameFromAscii(asciiString.slice(2));
+    const decodedUserName = parseUsernameFromAscii(userNameHex);
     console.log("User Name:", decodedUserName);
 
     return decodedUserName;
