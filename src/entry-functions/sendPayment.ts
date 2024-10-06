@@ -1,7 +1,8 @@
+import { MoveAddressType } from "@aptos-labs/ts-sdk";
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
 
 export type SendPaymentArguments = {
-  recipient: string; // Address of the recipient
+  recipient: MoveAddressType; // Address of the recipient
   amount: number; // Payment amount in Aptos coins (u64)
   note: string; // Additional payment note (String)
 };

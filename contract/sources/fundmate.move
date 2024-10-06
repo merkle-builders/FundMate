@@ -143,7 +143,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
 
         // Transfer AptosCoin
         let coins = coin::withdraw<AptosCoin>(account, amount);
-        coin::deposit(recipient, coins);
+        coin::deposit<AptosCoin>(recipient, coins);
 
         // Record the payment in both users' conversation records
         let payment = Payment {

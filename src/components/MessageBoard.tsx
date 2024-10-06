@@ -9,7 +9,7 @@ import { aptosClient } from "@/utils/aptosClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getMessageContent } from "@/view-functions/getMessageContent";
-import { writeMessage } from "@/entry-functions/writeMessage";
+import { writeMessage } from "@/entry-functions/sendMessage";
 
 export function MessageBoard() {
   const { account, signAndSubmitTransaction } = useWallet();

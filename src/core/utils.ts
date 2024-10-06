@@ -79,3 +79,11 @@ export const formatDate = (timestamp: string): string => {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+export function parseReadableStringFromHex(hexStr: string) {
+  hexStr = hexStr.slice(2);
+
+  const parts = hexStr.split(",");
+
+  return parts.map((part) => String.fromCharCode(parseInt(part))).join("");
+}

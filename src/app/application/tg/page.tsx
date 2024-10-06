@@ -22,10 +22,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { createId } from "@/message-functions/createID";
+import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
-import { sendPayment } from "@/message-functions/sendPayment";
+import { sendPayment } from "@/entry-functions/sendPayment";
+import { error } from "console";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -34,7 +35,7 @@ const TelegramUI = ({}) => {
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
   const [isSearchList, setIsSearchList] = useState<any[]>([]);
-  const [isFriends, setIsFriends] = useState<[]>([]);
+  // const [isFriends, setIsFriends] = useState<[]>([]);
 
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
@@ -62,7 +63,7 @@ const TelegramUI = ({}) => {
       }
     };
 
-    fetchUsername(); 
+    fetchUsername();
   }, [account]); 
 
   console.log("showmodal status:", isShowModal);
@@ -104,7 +105,7 @@ const TelegramUI = ({}) => {
       const result = await signAndSubmitTransaction(paymentData);
       console.log("Payment successful:", result);
 
-      setIsShowPayModal(false); // Close the modal on success
+      setIsShowPayModal(false); 
     } catch (error) {
       console.error("Payment failed:", error);
     } finally {
