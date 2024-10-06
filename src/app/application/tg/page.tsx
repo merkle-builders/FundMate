@@ -51,19 +51,19 @@ const TelegramUI = ({}) => {
       console.log("the complete search list:", isSearchList);
     };
     fetchAllUsers();
-  });
+  },[]);
 
   useEffect(() => {
     const fetchUsername = async () => {
       if (account) {
         const fetchedUsername = await getUsername(account?.address);
-        setUserName(fetchedUsername ?? ""); // Set username or an empty string if not found
-        setIsShowModal(!fetchedUsername); // Show modal if username is not found (null or empty)
+        setUserName(fetchedUsername ?? ""); 
+        setIsShowModal(!fetchedUsername); 
       }
     };
 
-    fetchUsername(); // Call fetchUsername when the component mounts or account changes
-  }, [account]); // Add account to the dependency array to rerun when account changes
+    fetchUsername(); 
+  }, [account]); 
 
   console.log("showmodal status:", isShowModal);
 
