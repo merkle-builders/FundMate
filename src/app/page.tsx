@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 
 
 import { Header } from "@/components/Header";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-// import { WalletBaselogin } from "@/components/WalletBaselogin";
+import { useWallet, WalletName } from "@aptos-labs/wallet-adapter-react";
+import { WalletBaselogin } from "@/components/WalletBaselogin";
 import { Spotlight } from "@/components/ui/spotlight";
 import { Button } from "@/components/ui/button";
 function App() {
-  const { account, connected, wallet } = useWallet();
+  const { account, connected, wallet, connect } = useWallet();
 
   const router = useRouter();
 
@@ -19,10 +19,20 @@ function App() {
       console.log("connected: ", account?.address);
       // router.push("/application/tg");
     }
+    console.log("wallet info", wallet?.name);
   }, [connected]);
   console.log("connect status is:", connected);
 
   console.log("wallet info", wallet?.name);
+
+  const handleLaunch = () => {
+    if (connected) {
+      console.log("connected: ", account?.address);
+      router.push("/application/tg");
+    } else if( !connected){
+      connect("Continue with Google" as WalletName)
+    }
+  }
 
   return (
     <>
@@ -39,7 +49,7 @@ function App() {
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
             Decentralized messaging with built-in crypto payments on Aptos. Connect, chat, and send funds effortlessly.
           </p>
-          <Button className="mt-4 font-extrabold " onClick={() => router.push("/application/tg")}>
+          <Button className="mt-4 font-extrabold " onClick={() => handleLaunch()}>
             Launch App
           </Button>
         </div>

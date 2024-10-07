@@ -134,9 +134,9 @@ const TelegramUI = ({ }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-zinc-800 overflow-hidden">
       {/* Main sidebar */}
-      <div className="w-1/4 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-1/4 bg-zinc-800 border-r border-gray-200 flex flex-col">
         <div className="p-4 border-b border-gray-200 flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -158,7 +158,7 @@ const TelegramUI = ({ }) => {
             <input
               type="text"
               placeholder="Search"
-              className="w-full pl-8 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full pl-8 pr-4 py-2 rounded-full bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" />
           </div>
@@ -167,7 +167,7 @@ const TelegramUI = ({ }) => {
           {chats.map((chat) => (
             <div
               key={chat.id}
-              className={`p-4 hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${selectedChat === chat.id ? "bg-blue-100" : ""
+              className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${selectedChat === chat.id ? "bg-slate-700" : ""
                 }`}
               onClick={() => setSelectedChat(chat.id)}
             >
@@ -175,9 +175,9 @@ const TelegramUI = ({ }) => {
                 <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
                 <div className="flex-grow">
                   <h3 className="font-semibold">{chat.name}</h3>
-                  <p className="text-sm text-gray-500 truncate">{chat.lastMessage}</p>
+                  <p className="text-sm text-gray-200 truncate">{chat.lastMessage}</p>
                 </div>
-                <span className="text-xs text-gray-400">{chat.time}</span>
+                <span className="text-xs text-gray-300">{chat.time}</span>
               </div>
             </div>
           ))}
@@ -214,7 +214,7 @@ const TelegramUI = ({ }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Write a message..."
-                  className="flex-grow px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <Button type="submit" className="ml-2">
                   <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
@@ -223,7 +223,7 @@ const TelegramUI = ({ }) => {
             </div>
           </>
         ) : (
-          <div className="flex-grow flex items-center justify-center text-gray-500">
+          <div className="flex-grow flex items-center justify-center text-gray-600">
             Select a chat to start messaging
           </div>
         )}
