@@ -72,7 +72,7 @@ export function WalletBaselogin() {
   ) : (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-5">Login to Fundmate</Button>
+        <Button className="mt-5 font-bold">Launch App</Button>
       </DialogTrigger>
       <ConnectWalletDialog close={closeDialog} />
     </Dialog>
@@ -96,7 +96,7 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
           <DialogTitle className="flex flex-col text-center leading-snug">
             {hasAptosConnectWallets && (
               <>
-                <span>Log in or sign up</span>
+                <span>Sign In</span>
               </>
             )}
           </DialogTitle>

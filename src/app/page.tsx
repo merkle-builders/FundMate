@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     if (connected) {
       console.log("connected: ", account?.address);
-      // router.push("/application/tg");
+      router.push("/application/tg");
     }
     console.log("wallet info", wallet?.name);
   }, [connected]);
@@ -48,7 +48,7 @@ function App() {
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
             Decentralized messaging with built-in crypto payments on Aptos. Connect, chat, and send funds effortlessly.
           </p>
-          <WalletBaselogin />
+          {connected ?<Button className="font-bold" onClick={() => router.push("application/tg")}>Launching App...</Button> : <WalletBaselogin />}
         </div>
       </div>
     </>
