@@ -72,7 +72,7 @@ export function WalletBaselogin() {
   ) : (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button></Button>
+        <Button className="mt-5">Login to Fundmate</Button>
       </DialogTrigger>
       <ConnectWalletDialog close={closeDialog} />
     </Dialog>
