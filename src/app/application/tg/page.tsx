@@ -310,7 +310,7 @@ const TelegramUI = ({}) => {
                 Recipient
               </Label>
               <Input
-                value={recipient}
+                value={filteredUsers.find((user) => user.address === selectedChat)?.address || "Unknown User"}
                 onChange={(e) => setRecipient(e.target.value)}
                 id="recipient"
                 className="col-span-3"
