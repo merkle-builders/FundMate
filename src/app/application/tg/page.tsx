@@ -221,7 +221,7 @@ const TelegramUI = ({}) => {
                   <DropdownMenuLabel></DropdownMenuLabel>
                   <DropdownMenuItem
                     className="hover:cursor-pointer"
-                    onClick={() => router.push("/application/profile")}
+                    onClick={() => router.push(`/application/profile?address=${selectedChat}`)}
                   >
                     Profile
                   </DropdownMenuItem>

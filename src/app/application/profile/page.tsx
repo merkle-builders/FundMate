@@ -8,28 +8,39 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, User, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getUsername } from "@/view-functions/getUsername";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
   const { account } = useWallet();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
+  const [profileAddress, setProfileAddress] = useState("");
+
+  useEffect(() => {
+    const addressParam = searchParams.get("address");
+    if (addressParam) {
+      setProfileAddress(addressParam);
+    } else if (account) {
+      setProfileAddress(account.address);
+    }
+  }, [searchParams, account]);
 
   useEffect(() => {
     const fetchUsername = async () => {
-      if (account) {
+      if (profileAddress) {
         setLoading(true);
-        const fetchedUsername = await getUsername(account?.address);
+        const fetchedUsername = await getUsername(profileAddress);
         setUsername(fetchedUsername ?? "");
         setLoading(false);
       }
     };
 
     fetchUsername();
-  }, [account]);
+  }, [profileAddress]);
 
   return (
     <div className="container mx-auto px-4 py-8">
