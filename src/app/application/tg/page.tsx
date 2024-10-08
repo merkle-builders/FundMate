@@ -208,7 +208,9 @@ const TelegramUI = ({}) => {
           <>
             <div className="p-4 border-b border-gray-200 flex items-center">
               <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-              <h2 className="font-semibold">{chats.find((chat) => chat.id === selectedChat)?.name}</h2>
+              <h2 className="font-semibold">
+                {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
+              </h2>
             </div>
             <ChatMessageList ref={messagesRef} className="flex-grow p-4 overflow-y-auto">
               {chatMessages.map((msg, index) => (
