@@ -186,23 +186,25 @@ const TelegramUI = ({}) => {
         </div>
 
         <div className="overflow-y-auto flex-grow">
-          {filteredUsers.map((user) => (
-            <div
-              key={user.address}
-              className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
-                selectedChat === user.address ? "bg-slate-700" : ""
-              }`}
-              onClick={() => setSelectedChat(user.address)}
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                <div className="flex-grow">
-                  <h3 className="font-semibold">{user.username}</h3>
-                  <p className="text-sm text-gray-200 truncate">{user.address}</p>
+          {filteredUsers
+            .filter((user) => user.address !== account?.address) // Exclude the logged-in user
+            .map((user) => (
+              <div
+                key={user.address}
+                className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                  selectedChat === user.address ? "bg-slate-700" : ""
+                }`}
+                onClick={() => setSelectedChat(user.address)}
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold">{user.username}</h3>
+                    <p className="text-sm text-gray-200 truncate">{user.address}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
