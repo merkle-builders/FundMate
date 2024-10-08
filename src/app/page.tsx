@@ -13,15 +13,6 @@ function App() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (connected) {
-      console.log("connected: ", account?.address);
-      router.push("/application/tg");
-    }
-    console.log("wallet info", wallet?.name);
-  }, [connected]);
-  console.log("connect status is:", connected);
-
   console.log("wallet info", wallet?.name);
 
   useEffect(() => {
@@ -29,8 +20,6 @@ function App() {
       if (connected) {
         console.log("connected: ", account?.address);
         router.push("/application/tg");
-      } else if (!connected) {
-        connect("Continue with Google" as WalletName);
       }
     };
     handleLaunch();

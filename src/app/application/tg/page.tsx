@@ -150,6 +150,11 @@ const TelegramUI = ({}) => {
     { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
   ];
 
+  const handleDisconnect = async () => {
+    await disconnect();
+    router.push("/");
+  };
+
   console.log("this is the recipient value:", recipient);
 
   return (
@@ -169,7 +174,7 @@ const TelegramUI = ({}) => {
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuItem disabled>API</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="hover:cursor-pointer" onClick={() => disconnect()}>
+              <DropdownMenuItem className="hover:cursor-pointer" onClick={() => handleDisconnect()}>
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
