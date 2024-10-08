@@ -86,6 +86,11 @@ const TelegramUI = ({}) => {
     }
   }, [chatMessages]);
 
+  useEffect(() => {
+    const foundUser = filteredUsers.find((user) => user.address === selectedChat);
+    setRecipient(foundUser?.address || "Unknown User");
+  }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
+
   const handleCreateProfile = async () => {
     if (!userName) {
       alert("Please enter a username");
@@ -144,6 +149,8 @@ const TelegramUI = ({}) => {
     { id: 2, name: "Jane Smith", lastMessage: "Did you see the news?", time: "09:15 AM" },
     { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
   ];
+
+  console.log("this is the recipient value:", recipient);
 
   return (
     <div className="flex h-screen bg-zinc-800 overflow-hidden">
@@ -310,7 +317,7 @@ const TelegramUI = ({}) => {
                 Recipient
               </Label>
               <Input
-                value={filteredUsers.find((user) => user.address === selectedChat)?.address || "Unknown User"}
+                value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 id="recipient"
                 className="col-span-3"
