@@ -29,7 +29,7 @@ import { sendPayment } from "@/entry-functions/sendPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
-import {HoverBorderGradient}  from "@/components/ui/hover-border-gradient"
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -173,8 +173,9 @@ const TelegramUI = ({}) => {
           <div className="relative flex-grow">
             <VanishInput
               placeholders={["Search your Mate", "enter username"]}
-              onChange={(e) => setSearchName(e.target.value)}
-              onSubmit={()=> console.log("Searching: ", searchName)}
+              value={searchTerm}
+              onChange={handleSearch}
+              onSubmit={() => console.log("Searching: ", searchName)}
             />
             {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
           </div>
@@ -228,7 +229,9 @@ const TelegramUI = ({}) => {
                   >
                     Pay
                   </HoverBorderGradient>
-                  <Button className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">Request Payment</Button>
+                  <Button className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                    Request Payment
+                  </Button>
                 </div>
               </div>
               <form onSubmit={handleSendMessage} className="flex items-center">
