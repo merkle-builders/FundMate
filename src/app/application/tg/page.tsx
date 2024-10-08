@@ -37,12 +37,10 @@ const TelegramUI = ({}) => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
-  const [isSearchList, setIsSearchList] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
-  const [searchName, setSearchName] = useState<string>("");
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -175,7 +173,6 @@ const TelegramUI = ({}) => {
               placeholders={["Search your Mate", "enter username"]}
               value={searchTerm}
               onChange={handleSearch}
-              onSubmit={() => console.log("Searching: ", searchName)}
             />
             {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
           </div>
@@ -207,8 +204,24 @@ const TelegramUI = ({}) => {
         {selectedChat ? (
           <>
             <div className="p-4 border-b border-gray-200 flex items-center">
-              <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-              <h2 className="font-semibold">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer"></div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel></DropdownMenuLabel>
+                  <DropdownMenuItem
+                    className="hover:cursor-pointer"
+                    onClick={() => router.push("/application/profile")}
+                  >
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:cursor-pointer">Add as Friend</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <h2 className="font-semibold text-white">
                 {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
               </h2>
             </div>
