@@ -1,7 +1,6 @@
 import { testnetClient } from "../core/constants";
 import { parseReadableStringFromHex } from "@/core/utils";
 export const getUsername = async (accountAddress: string) => {
-  
   try {
     console.log(`Attempting to get username for address: ${accountAddress}`);
 

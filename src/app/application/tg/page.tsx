@@ -27,18 +27,20 @@ import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
-import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
 import {HoverBorderGradient}  from "@/components/ui/hover-border-gradient"
 
-const TelegramUI = ({ }) => {
+const TelegramUI = ({}) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
   const [isSearchList, setIsSearchList] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [recipient, setRecipient] = useState("");
@@ -52,11 +54,21 @@ const TelegramUI = ({ }) => {
 
   useEffect(() => {
     const fetchAllUsers = async () => {
-      const allUsers = await getAllUsers();
-      setIsSearchList([...isSearchList, ...allUsers]);
+      const users = await getAllUsers();
+      setAllUsers(users);
+      setFilteredUsers(users);
     };
     fetchAllUsers();
   }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    const filtered = allUsers.filter(
+      (user) => user.username.toLowerCase().includes(term) || user.address.toLowerCase().includes(term),
+    );
+    setFilteredUsers(filtered);
+  };
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -117,7 +129,7 @@ const TelegramUI = ({ }) => {
   };
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("inside")
+    console.log("inside");
     e.preventDefault();
     if (message.trim()) {
       setChatMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]);
@@ -127,7 +139,7 @@ const TelegramUI = ({ }) => {
 
   useEffect(() => {
     console.log(selectedChat);
-  }, [selectedChat])
+  }, [selectedChat]);
 
   const chats = [
     { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
@@ -152,7 +164,9 @@ const TelegramUI = ({ }) => {
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuItem disabled>API</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => disconnect()}>Log out</DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer" onClick={() => disconnect()}>
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -165,21 +179,22 @@ const TelegramUI = ({ }) => {
             {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
           </div>
         </div>
+
         <div className="overflow-y-auto flex-grow">
-          {chats.map((chat) => (
+          {filteredUsers.map((user) => (
             <div
-              key={chat.id}
-              className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${selectedChat === chat.id ? "bg-slate-700" : ""
-                }`}
-              onClick={() => setSelectedChat(chat.id)}
+              key={user.address}
+              className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                selectedChat === user.address ? "bg-slate-700" : ""
+              }`}
+              onClick={() => setSelectedChat(user.address)}
             >
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
                 <div className="flex-grow">
-                  <h3 className="font-semibold">{chat.name}</h3>
-                  <p className="text-sm text-gray-200 truncate">{chat.lastMessage}</p>
+                  <h3 className="font-semibold">{user.username}</h3>
+                  <p className="text-sm text-gray-200 truncate">{user.address}</p>
                 </div>
-                <span className="text-xs text-gray-300">{chat.time}</span>
               </div>
             </div>
           ))}
