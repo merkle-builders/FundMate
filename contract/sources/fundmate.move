@@ -245,6 +245,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         (conversation.messages, conversation.payments)
     }
 
+    #[view]
     public fun get_sent_payments(account_address: address, friend_address: address): vector<Payment> acquires UserProfile {
         assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
         let user_profile = borrow_global<UserProfile>(account_address);

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Send, Menu } from "lucide-react";
+import { Send, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
+import { getPayment } from "@/view-functions/getPayment";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
@@ -59,6 +60,21 @@ const TelegramUI = ({}) => {
     fetchAllUsers();
   }, []);
 
+  useEffect(() => {
+    const getPayments = async () => {
+      if (recipient) {
+        try {
+          const payment = await getPayment(account?.address, recipient);
+          console.log(payment);
+          // Do something with the payment
+        } catch (error) {
+          console.error("Failed to get payment:", error);
+        }
+      }
+    };
+    getPayments();
+  }, [recipient, account?.address]); // Adding recipient to the dependency array
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -88,7 +104,7 @@ const TelegramUI = ({}) => {
 
   useEffect(() => {
     const foundUser = filteredUsers.find((user) => user.address === selectedChat);
-    setRecipient(foundUser?.address || "Unknown User");
+    if (foundUser) setRecipient(foundUser?.address);
   }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
 
   const handleCreateProfile = async () => {
@@ -185,7 +201,7 @@ const TelegramUI = ({}) => {
               placeholders={["Search your Mate", "enter username"]}
               // value={searchTerm}
               onChange={handleSearch}
-              onSubmit={()=> console.log("search submit")}
+              onSubmit={() => console.log("search submit")}
             />
             {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
           </div>
@@ -206,7 +222,9 @@ const TelegramUI = ({}) => {
                   <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
                   <div className="flex-grow">
                     <h3 className="font-semibold">{user.username}</h3>
-                    <p className="text-sm text-gray-200 truncate">{user.address.slice(0,10) + "...." + user.address.slice(-7)}</p>
+                    <p className="text-sm text-gray-200 truncate">
+                      {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
+                    </p>
                   </div>
                 </div>
               </div>
