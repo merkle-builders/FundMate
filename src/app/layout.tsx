@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               enableSystem
               disableTransitionOnChange
             >
-              <div id="root">{children}</div>
+              <div id="root" className="bg-black">{children}</div>
             </ThemeProvider>
             <WrongNetworkAlert />
             <Toaster />

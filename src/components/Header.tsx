@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function Header() {
   return (
-    <div className="flex items-center justify-between px-4 py-2 max-w-screen-xl mx-auto w-full flex-wrap">
+    <div className="flex items-center bg-black text-white justify-between px-4 py-2 max-w-screen-xl mx-auto w-full flex-wrap">
       <Link className="display" href="/">
         FundMate
       </Link>
