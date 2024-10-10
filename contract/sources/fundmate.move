@@ -10,7 +10,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     use std::string::String;
     
     // Structs
-    struct UserProfile has key {
+   struct UserProfile has key {
         user_name: String,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
@@ -18,8 +18,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         friend_added_events: event::EventHandle<FriendAddedEvent>,
         payment_sent_events: event::EventHandle<PaymentSentEvent>,
         message_sent_events: event::EventHandle<MessageSentEvent>,
-        payment_request_events: event::EventHandle<PaymentRequestEvent>, // New event handle
-
     }
     
     struct UserInfo has store, drop, copy {
@@ -49,12 +47,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         timestamp: u64,
     }
 
-    struct PaymentRequest has store, drop {
-    requester: address,
-    amount: u64,
-    note: String,
-    timestamp: u64,
-}
+  
 
     // Events
     #[event]
@@ -94,29 +87,29 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         move_to(account, AllUsers { users: vector::empty() });
     }
 
-    public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
-        let signer_address = signer::address_of(account);
-        assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
+   public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
+    let signer_address = signer::address_of(account);
+    assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
-        let user_profile = UserProfile {
-            user_name: user_name,
-            friends: vector::empty<address>(),
-            conversations: table::new(),
-            user_created_events: account::new_event_handle<UserCreatedEvent>(account),
-            friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
-            payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
-            message_sent_events: account::new_event_handle<MessageSentEvent>(account),
-        };
+    let user_profile = UserProfile {
+        user_name: user_name,
+        friends: vector::empty<address>(),
+        conversations: table::new(),
+        user_created_events: account::new_event_handle<UserCreatedEvent>(account),
+        friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
+        payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
+        message_sent_events: account::new_event_handle<MessageSentEvent>(account),
+    };
 
-        move_to(account, user_profile);
+    move_to(account, user_profile);
 
-        // Add UserInfo to AllUsers list
-        let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
-        vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name: user_name });
+    // Add UserInfo to AllUsers list
+    let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
+    vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name: user_name });
 
-        let user_profile = borrow_global_mut<UserProfile>(signer_address);
-        event::emit_event(&mut user_profile.user_created_events, UserCreatedEvent { user_address: signer_address, user_name: user_name });
-    }
+    let user_profile = borrow_global_mut<UserProfile>(signer_address);
+    event::emit_event(&mut user_profile.user_created_events, UserCreatedEvent { user_address: signer_address, user_name: user_name });
+}
     
     public entry fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
         let signer_address = signer::address_of(account);
@@ -135,22 +128,9 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
             event::emit_event(&mut user_profile.friend_added_events, FriendAddedEvent { user_address: signer_address, friend_address });
         }
     }
-    public entry fun request_payment(account: &signer, recipient: address, amount: u64, note: String) acquires UserProfile {
-        let requester_address = signer::address_of(account);
-        assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
-    
-        let payment_request = PaymentRequest {
-            requester: requester_address,
-            amount,
-            note,
-            timestamp: timestamp::now_seconds(),
-        };
 
-        let recipient_profile = borrow_global_mut<UserProfile>(recipient);
-        vector::push_back(&mut recipient_profile.payment_requests, payment_request);
-    }
     
-     public entry fun send_payment(
+   public entry fun send_payment(
         account: &signer,
         recipient: address,
         amount: u64,
@@ -161,30 +141,53 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(exists<UserProfile>(recipient), E_USER_NOT_FOUND);
         assert!(signer_address != recipient, E_SELF_OPERATION_NOT_ALLOWED);
 
-        let sender_profile = borrow_global_mut<UserProfile>(signer_address);
-        // assert!(vector::contains(&sender_profile.friends, &recipient), E_NOT_FRIEND);
+        {
+            let sender_profile = borrow_global_mut<UserProfile>(signer_address);
 
-        // Transfer AptosCoin
-        let coins = coin::withdraw<AptosCoin>(account, amount);
-        coin::deposit(recipient, coins);
+            if (!table::contains(&sender_profile.conversations, recipient)) {
+                table::add(&mut sender_profile.conversations, recipient, Conversation {
+                    messages: vector::empty(),
+                    payments: vector::empty(),
+                });
+            };
 
-        // Record the payment in both users' conversation records
-        let payment = Payment {
-            sender: signer_address,
-            amount,
-            note,
-            timestamp: timestamp::now_seconds(),
+            let coins = coin::withdraw<AptosCoin>(account, amount);
+            coin::deposit(recipient, coins);
+
+            let payment = Payment {
+                sender: signer_address,
+                amount,
+                note,
+                timestamp: timestamp::now_seconds(),
+            };
+
+            let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
+            vector::push_back(&mut sender_conversation.payments, payment);
+
+            event::emit_event(&mut sender_profile.payment_sent_events, PaymentSentEvent { 
+                sender: signer_address, 
+                recipient, 
+                amount 
+            });
         };
 
-        let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
-        vector::push_back(&mut sender_conversation.payments, payment);
-
-        event::emit_event(&mut sender_profile.payment_sent_events, PaymentSentEvent { sender: signer_address, recipient, amount });
-
-        // Update recipient's conversation
-        let recipient_profile = borrow_global_mut<UserProfile>(recipient);
-        let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
-        vector::push_back(&mut recipient_conversation.payments, payment);
+        {
+            let recipient_profile = borrow_global_mut<UserProfile>(recipient);
+            if (!table::contains(&recipient_profile.conversations, signer_address)) {
+                table::add(&mut recipient_profile.conversations, signer_address, Conversation {
+                    messages: vector::empty(),
+                    payments: vector::empty(),
+                });
+            };
+            let recipient_conversation = table::borrow_mut(&mut recipient_profile.conversations, signer_address);
+            let payment = Payment {
+                sender: signer_address,
+                amount,
+                note,
+                timestamp: timestamp::now_seconds(),
+            };
+            vector::push_back(&mut recipient_conversation.payments, payment);
+        };
     }
 
     public entry fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
