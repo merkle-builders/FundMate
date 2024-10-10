@@ -31,8 +31,10 @@ import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import PaymentCard from "@/components/PaymentCard";
+import { StarsBackground } from "@/components/ui/star-background";
 
-const TelegramUI = ({}) => {
+const FundMateChat = ({}) => {
   const [selectedChat, setSelectedChat] = useState< null | string>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
@@ -164,12 +166,6 @@ const TelegramUI = ({}) => {
     console.log(selectedChat);
   }, [selectedChat]);
 
-  const chats = [
-    { id: 1, name: "John Doe", lastMessage: "Hey, how are you?", time: "10:30 AM" },
-    { id: 2, name: "Jane Smith", lastMessage: "Did you see the news?", time: "09:15 AM" },
-    { id: 3, name: "Bob Johnson", lastMessage: "Let's meet tomorrow", time: "Yesterday" },
-  ];
-
   const handleDisconnect = async () => {
     await disconnect();
     router.push("/");
@@ -262,7 +258,19 @@ const TelegramUI = ({}) => {
                 {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
               </h2>
             </div>
-            <ChatMessageList ref={messagesRef} className="flex-grow p-4 overflow-y-auto">
+            <ChatMessageList ref={messagesRef} className="flex-grow p-4 w-full overflow-y-auto">
+              {sentPayments && sentPayments.length > 0 && (
+                <>
+                  {sentPayments.map((payment, index) => (
+                    <ChatBubble className="mb-1" key={index} variant={ "sent" }>
+                      <ChatBubbleAvatar src="" fallback={"👦"} />
+                      <ChatBubbleMessage>
+                        <PaymentCard key={index} payment={payment} />
+                      </ChatBubbleMessage>
+                    </ChatBubble>
+                  ))}
+                </>
+              )}
               {chatMessages.map((msg, index) => (
                 <ChatBubble key={index} variant={msg.role === "user" ? "sent" : "received"}>
                   <ChatBubbleAvatar src="" fallback={msg.role === "user" ? "👦" : "👧"} />
@@ -304,6 +312,7 @@ const TelegramUI = ({}) => {
             Select a chat to start messaging
           </div>
         )}
+        <StarsBackground className="pointer-events-none"/>
       </div>
 
       {/* Modal Popup for username Setup */}
@@ -383,4 +392,4 @@ const TelegramUI = ({}) => {
   );
 };
 
-export default TelegramUI;
+export default FundMateChat;

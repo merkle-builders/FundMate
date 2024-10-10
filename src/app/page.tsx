@@ -27,7 +27,7 @@ function App() {
     const handleLaunch = () => {
       if (connected) {
         console.log("connected: ", account?.address);
-        router.push("/application/tg");
+        router.push("/application");
       }
     };
     handleLaunch();
@@ -434,7 +434,7 @@ function App() {
             Decentralized messaging with built-in crypto payments on Aptos. Connect, chat, and send funds effortlessly.
           </p>
           {connected ? (
-            <Button className="font-bold" onClick={() => router.push("application/tg")}>
+            <Button className="font-bold" onClick={() => router.push("/application")}>
               Launching App...
             </Button>
           ) : (

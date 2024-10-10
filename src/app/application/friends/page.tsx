@@ -41,8 +41,8 @@ export default function Friends() {
                   <DropdownMenuContent className="w-56">
                     {" "}
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() => router.push("/creator")}>Profile</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push("/message")}>Message</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/application/profile")}>Profile</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/application")}>Message</DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
