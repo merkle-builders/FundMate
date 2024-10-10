@@ -244,4 +244,16 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         let conversation = table::borrow(&user_profile.conversations, friend_address);
         (conversation.messages, conversation.payments)
     }
+
+    public fun get_sent_payments(account_address: address, friend_address: address): vector<Payment> acquires UserProfile {
+        assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
+        let user_profile = borrow_global<UserProfile>(account_address);
+        
+        if (table::contains(&user_profile.conversations, friend_address)) {
+            let conversation = table::borrow(&user_profile.conversations, friend_address);
+            conversation.payments
+        } else {
+            vector::empty<Payment>()
+        }
+    }
 }
