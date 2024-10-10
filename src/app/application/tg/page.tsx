@@ -25,7 +25,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
-import { getPayment } from "@/view-functions/getPayment";
+import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
@@ -33,7 +33,7 @@ import { VanishInput } from "@/components/ui/vanish-input";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const TelegramUI = ({}) => {
-  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const [selectedChat, setSelectedChat] = useState< null | string>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
@@ -46,6 +46,7 @@ const TelegramUI = ({}) => {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sentPayments, setSentPayments] = useState<Payment[] | null>();
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -56,6 +57,7 @@ const TelegramUI = ({}) => {
       const users = await getAllUsers();
       setAllUsers(users);
       setFilteredUsers(users);
+      console.log(typeof(users[0].address))
     };
     fetchAllUsers();
   }, []);
@@ -64,9 +66,9 @@ const TelegramUI = ({}) => {
     const getPayments = async () => {
       if (recipient) {
         try {
-          const payment = await getPayment(account?.address, recipient);
-          console.log(payment);
-          // Do something with the payment
+          const payment = await getSentPayment(account?.address, recipient);
+          setSentPayments(payment)
+          console.log("Sent Payments: ", sentPayments);
         } catch (error) {
           console.error("Failed to get payment:", error);
         }
@@ -103,8 +105,10 @@ const TelegramUI = ({}) => {
   }, [chatMessages]);
 
   useEffect(() => {
+    console.log("Selected chat: ", selectedChat)
     const foundUser = filteredUsers.find((user) => user.address === selectedChat);
     if (foundUser) setRecipient(foundUser?.address);
+    console.log("Recipient: ", recipient)
   }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
 
   const handleCreateProfile = async () => {

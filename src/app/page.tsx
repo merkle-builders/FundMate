@@ -17,7 +17,7 @@ const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World)
 });
 
 function App() {
-  const { account, connected, wallet, connect } = useWallet();
+  const { account, connected, wallet } = useWallet();
 
   const router = useRouter();
 

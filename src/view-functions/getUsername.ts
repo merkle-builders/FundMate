@@ -12,17 +12,12 @@ export const getUsername = async (accountAddress: string) => {
       },
     });
 
-    console.log("Raw result from view function:", result);
-
     if (!result || !Array.isArray(result) || result.length === 0 || typeof result[0] !== "string") {
       console.error("Invalid user name data received.");
       return null;
     }
 
-    const userNameHex = result[0] as string;
-    console.log("Username in hex is:", userNameHex);
-
-    const decodedUserName = parseReadableStringFromHex(userNameHex);
+    const decodedUserName = parseReadableStringFromHex(result[0] as string);
     console.log("User Name:", decodedUserName);
 
     return decodedUserName;
