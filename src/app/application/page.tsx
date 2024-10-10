@@ -174,10 +174,10 @@ const FundMateChat = ({}) => {
   console.log("this is the recipient value:", recipient);
 
   return (
-    <div className="flex h-screen bg-zinc-800 overflow-hidden">
+    <div className="flex h-screen bg-slate-800 overflow-hidden">
       {/* Main sidebar */}
-      <div className="w-1/4 bg-zinc-800 border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200 flex items-center">
+      <div className="w-1/4 bg-slate-800 border-r border-gray-200 flex flex-col">
+        <div className="p-3 border-b border-gray-200 flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer" />
@@ -236,7 +236,7 @@ const FundMateChat = ({}) => {
       <div className="flex-grow flex flex-col">
         {selectedChat ? (
           <>
-            <div className="p-4 border-b border-gray-200 flex items-center">
+            <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer"></div>
@@ -258,13 +258,13 @@ const FundMateChat = ({}) => {
                 {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
               </h2>
             </div>
-            <ChatMessageList ref={messagesRef} className="flex-grow p-4 w-full overflow-y-auto">
+            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-full overflow-y-auto">
               {sentPayments && sentPayments.length > 0 && (
                 <>
                   {sentPayments.map((payment, index) => (
-                    <ChatBubble className="mb-1" key={index} variant={ "sent" }>
-                      <ChatBubbleAvatar src="" fallback={"👦"} />
-                      <ChatBubbleMessage>
+                    <ChatBubble className="mb-1 " key={index} variant={ payment.sender === account?.address ? "sent": "received"}>
+                      <ChatBubbleAvatar src="" fallback={payment.sender === account?.address ? "👦" : "👧"} />
+                      <ChatBubbleMessage className="bg-slate-700 p-0">
                         <PaymentCard key={index} payment={payment} />
                       </ChatBubbleMessage>
                     </ChatBubble>
@@ -278,7 +278,7 @@ const FundMateChat = ({}) => {
                 </ChatBubble>
               ))}
             </ChatMessageList>
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t bg-slate-800 border-gray-600">
               <div className="flex items-center">
                 <div className="flex gap-4 mb-4">
                   <HoverBorderGradient
