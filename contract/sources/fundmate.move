@@ -10,14 +10,17 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     use std::string::String;
     
     // Structs
-   struct UserProfile has key {
+    struct UserProfile has key {
         user_name: String,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
+        payment_requests: Table<address, vector<PaymentRequest>>,
+        payment_requesters: vector<address>, // Add this vector to track requesters
         user_created_events: event::EventHandle<UserCreatedEvent>,
         friend_added_events: event::EventHandle<FriendAddedEvent>,
         payment_sent_events: event::EventHandle<PaymentSentEvent>,
         message_sent_events: event::EventHandle<MessageSentEvent>,
+        payment_requested_events: event::EventHandle<PaymentRequestedEvent>,
     }
     
     struct UserInfo has store, drop, copy {
@@ -47,7 +50,12 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         timestamp: u64,
     }
 
-  
+    struct PaymentRequest has store, drop, copy {
+        requester: address,
+        amount: u64,
+        note: String,
+        timestamp: u64,
+    }
 
     // Events
     #[event]
@@ -75,42 +83,55 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         recipient: address,
     }
 
+    #[event]
+    struct PaymentRequestedEvent has drop, store {
+        requester: address,
+        requestee: address,
+        amount: u64,
+    }
+
     // Error codes
     const E_USER_ALREADY_EXISTS: u64 = 1;
     const E_USER_NOT_FOUND: u64 = 2;
     const E_INSUFFICIENT_BALANCE: u64 = 3;
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
+    const E_INVALID_AMOUNT: u64 = 6;
 
     // Initialize the contract
     fun init_module(account: &signer) {
         move_to(account, AllUsers { users: vector::empty() });
     }
 
-   public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
-    let signer_address = signer::address_of(account);
-    assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
+    // Create a new user profile
+public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
+        let signer_address = signer::address_of(account);
+        assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
-    let user_profile = UserProfile {
-        user_name: user_name,
-        friends: vector::empty<address>(),
+        let user_profile = UserProfile {
+        user_name,
+        friends: vector::empty(),
         conversations: table::new(),
+        payment_requests: table::new(),
+        payment_requesters: vector::empty(),  // Correct initialization for a vector<address>
         user_created_events: account::new_event_handle<UserCreatedEvent>(account),
         friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
         payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
         message_sent_events: account::new_event_handle<MessageSentEvent>(account),
+        payment_requested_events: account::new_event_handle<PaymentRequestedEvent>(account),
     };
 
-    move_to(account, user_profile);
+        move_to(account, user_profile);
 
-    // Add UserInfo to AllUsers list
-    let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
-    vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name: user_name });
+        // Add UserInfo to AllUsers list
+        let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
+        vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name });
 
-    let user_profile = borrow_global_mut<UserProfile>(signer_address);
-    event::emit_event(&mut user_profile.user_created_events, UserCreatedEvent { user_address: signer_address, user_name: user_name });
-}
+        event::emit_event(&mut borrow_global_mut<UserProfile>(signer_address).user_created_events, 
+                          UserCreatedEvent { user_address: signer_address, user_name });
+    }
     
+    // Add a friend
     public entry fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -129,8 +150,8 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         }
     }
 
-    
-   public entry fun send_payment(
+    // Send a payment
+    public entry fun send_payment(
         account: &signer,
         recipient: address,
         amount: u64,
@@ -190,6 +211,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         };
     }
 
+    // Send a message
     public entry fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -216,6 +238,43 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         vector::push_back(&mut recipient_conversation.messages, message);
     }
 
+    // Request a payment
+    public entry fun request_payment(
+    account: &signer,
+    requestee: address,
+    amount: u64,
+    note: String
+) acquires UserProfile {
+    let requester_address = signer::address_of(account);
+    assert!(exists<UserProfile>(requester_address), E_USER_NOT_FOUND);
+    assert!(exists<UserProfile>(requestee), E_USER_NOT_FOUND);
+    assert!(requester_address != requestee, E_SELF_OPERATION_NOT_ALLOWED);
+    assert!(amount > 0, E_INVALID_AMOUNT);
+
+    // Modify requester profile
+    let requester_profile = borrow_global_mut<UserProfile>(requester_address);
+    let payment_request = PaymentRequest {
+        requester: requester_address,
+        amount,
+        note,
+        timestamp: timestamp::now_seconds(),
+    };
+    event::emit_event(&mut requester_profile.payment_requested_events, PaymentRequestedEvent { 
+        requester: requester_address, 
+        requestee, 
+        amount 
+    });
+
+    // Modify requestee profile after requester
+    let requestee_profile = borrow_global_mut<UserProfile>(requestee);
+    if (!table::contains(&requestee_profile.payment_requests, requester_address)) {
+        table::add(&mut requestee_profile.payment_requests, requester_address, vector::empty());
+    };
+    let requestee_requests = table::borrow_mut(&mut requestee_profile.payment_requests, requester_address);
+    vector::push_back(requestee_requests, payment_request);
+}
+
+    // View functions
     #[view]
     public fun get_username(account_address: address): String acquires UserProfile {
         assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
@@ -256,5 +315,22 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         } else {
             vector::empty<Payment>()
         }
+    }
+
+    #[view]
+    public fun get_payment_requests(account_address: address): vector<PaymentRequest> acquires UserProfile {
+        assert!(exists<UserProfile>(account_address), E_USER_NOT_FOUND);
+        let user_profile = borrow_global<UserProfile>(account_address);
+        
+        let all_requests = vector::empty();
+        let requesters: vector<address> = user_profile.payment_requesters;
+        let i = 0;
+        while (i < vector::length(&requesters)) {
+            let requester = *vector::borrow(&requesters, i);
+            let requests = table::borrow(&user_profile.payment_requests, requester);
+            vector::append(&mut all_requests, *requests);
+            i = i + 1;
+        };
+        all_requests
     }
 }
