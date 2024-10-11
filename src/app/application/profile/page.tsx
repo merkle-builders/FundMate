@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getUsername } from "@/view-functions/getUsername";
 
-export default function Profile() {
+// Create a separate component for the content that uses useSearchParams
+const ProfileContent = () => {
   const { account } = useWallet();
   const router = useRouter();
-  const searchParams = useSearchParams(); // This is client-only
+  const searchParams = useSearchParams(); // This is now inside a component wrapped by Suspense
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [profileAddress, setProfileAddress] = useState("");
@@ -43,52 +44,59 @@ export default function Profile() {
   }, [profileAddress]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="container mx-auto px-4 py-8">
-        <Button onClick={() => router.back()} variant="ghost" className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
+    <div className="container mx-auto px-4 py-8">
+      <Button onClick={() => router.back()} variant="ghost" className="mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" /> Back
+      </Button>
 
-        <div className="flex flex-col gap-6">
-          <Card className="col-span-1 md:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">Profile Information</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col justify-center items-center">
-              <div className="flex flex-col items-center mb-6 w-24 h-24">
-                <ProfileIcon />
-                <h2 className="text-xl font-semibold">{loading ? "Loading..." : username || "Username not found"}</h2>
-              </div>
-              <div className="space-y-4 w-1/2">
-                <div>
-                  <Label className="font-semibold">Account Address</Label>
-                  <div className="flex items-center ">
-                    <Wallet className="mr-2 h-4 w-4 text-gray-500" />
-                    <Input value={account?.address} disabled={true} className="font-mono text-sm" />
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="font-semibold">Name</Label>
-                  <div className="flex items-center">
-                    <User className="mr-2 h-4 w-4 text-gray-500" />
-                    <Input value={username} disabled={true} />
-                  </div>
+      <div className="flex flex-col gap-6">
+        <Card className="col-span-1 md:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Profile Information</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center mb-6 w-24 h-24">
+              <ProfileIcon />
+              <h2 className="text-xl font-semibold">{loading ? "Loading..." : username || "Username not found"}</h2>
+            </div>
+            <div className="space-y-4 w-1/2">
+              <div>
+                <Label className="font-semibold">Account Address</Label>
+                <div className="flex items-center ">
+                  <Wallet className="mr-2 h-4 w-4 text-gray-500" />
+                  <Input value={account?.address} disabled={true} className="font-mono text-sm" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card className="col-span-1 flex flex-col justify-center items-center">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">Activity Overview</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col justify-center items-center h-fit w-3/4">
-              <Linechart />
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <Label className="font-semibold">Name</Label>
+                <div className="flex items-center">
+                  <User className="mr-2 h-4 w-4 text-gray-500" />
+                  <Input value={username} disabled={true} />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-1 flex flex-col justify-center items-center">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Activity Overview</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col justify-center items-center h-fit w-3/4">
+            <Linechart />
+          </CardContent>
+        </Card>
       </div>
+    </div>
+  );
+};
+
+// Main Profile component
+export default function Profile() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProfileContent />
     </Suspense>
   );
 }
