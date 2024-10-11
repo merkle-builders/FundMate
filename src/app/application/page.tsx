@@ -176,8 +176,8 @@ const FundMateChat = ({}) => {
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
       {/* Main sidebar */}
-      <div className="w-1/4 bg-slate-800 border-r border-gray-200 flex flex-col">
-        <div className="p-3 border-b border-gray-200 flex items-center">
+      <div className="w-1/4 bg-slate-800 border-r border-gray-500 flex flex-col">
+        <div className="p-3 border-b border-gray-500 flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer" />
@@ -265,7 +265,7 @@ const FundMateChat = ({}) => {
                     <ChatBubble className="mb-1 " key={index} variant={ payment.sender === account?.address ? "sent": "received"}>
                       <ChatBubbleAvatar src="" fallback={payment.sender === account?.address ? "👦" : "👧"} />
                       <ChatBubbleMessage className="bg-slate-700 p-0">
-                        <PaymentCard key={index} payment={payment} />
+                        <PaymentCard key={index} payment={payment} account={account?.address} />
                       </ChatBubbleMessage>
                     </ChatBubble>
                   ))}

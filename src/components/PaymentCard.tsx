@@ -3,15 +3,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "./ui/badge";
 import { Payment } from '@/view-functions/getSentPayment';
 import { convertOctaToApt } from '@/core/utils';
+import { MoveAddressType } from '@aptos-labs/ts-sdk';
  interface PaymentCardProps {
   payment: Payment
+  account: MoveAddressType | undefined
  }
-const PaymentCard: React.FC<PaymentCardProps> = ({ payment })  => {
+const PaymentCard: React.FC<PaymentCardProps> = ({ payment, account })  => {
 
   return (
     <Card className="w-full max-w-sm  bg-zinc-800 text-white border-gray-700">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Payment Sent</CardTitle>
+        <CardTitle className="text-lg font-semibold">{payment.sender == account ? "Payment Sent" : "Payment Received"}</CardTitle>
         <CardDescription className="text-gray-400">
           {payment.timestamp}
         </CardDescription>
