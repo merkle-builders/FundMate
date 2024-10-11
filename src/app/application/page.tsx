@@ -35,14 +35,14 @@ import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 
 const FundMateChat = ({}) => {
-  const [selectedChat, setSelectedChat] = useState< null | string>(null);
+  const [selectedChat, setSelectedChat] = useState<null | string>(null);
   const [message, setMessage] = useState("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
   const [userName, setUserName] = useState("");
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
@@ -59,7 +59,7 @@ const FundMateChat = ({}) => {
       const users = await getAllUsers();
       setAllUsers(users);
       setFilteredUsers(users);
-      console.log(typeof(users[0].address))
+      console.log(typeof users[0].address);
     };
     fetchAllUsers();
   }, []);
@@ -69,7 +69,7 @@ const FundMateChat = ({}) => {
       if (recipient) {
         try {
           const payment = await getSentPayment(account?.address, recipient);
-          setSentPayments(payment)
+          setSentPayments(payment);
           console.log("Sent Payments: ", sentPayments);
         } catch (error) {
           console.error("Failed to get payment:", error);
@@ -81,7 +81,7 @@ const FundMateChat = ({}) => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
+    // setSearchTerm(term);
     const filtered = allUsers.filter(
       (user) => user.username.toLowerCase().includes(term) || user.address.toLowerCase().includes(term),
     );
@@ -107,10 +107,10 @@ const FundMateChat = ({}) => {
   }, [chatMessages]);
 
   useEffect(() => {
-    console.log("Selected chat: ", selectedChat)
+    console.log("Selected chat: ", selectedChat);
     const foundUser = filteredUsers.find((user) => user.address === selectedChat);
     if (foundUser) setRecipient(foundUser?.address);
-    console.log("Recipient: ", recipient)
+    console.log("Recipient: ", recipient);
   }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
 
   const handleCreateProfile = async () => {
@@ -262,7 +262,11 @@ const FundMateChat = ({}) => {
               {sentPayments && sentPayments.length > 0 && (
                 <>
                   {sentPayments.map((payment, index) => (
-                    <ChatBubble className="mb-1 " key={index} variant={ payment.sender === account?.address ? "sent": "received"}>
+                    <ChatBubble
+                      className="mb-1 "
+                      key={index}
+                      variant={payment.sender === account?.address ? "sent" : "received"}
+                    >
                       <ChatBubbleAvatar src="" fallback={payment.sender === account?.address ? "👦" : "👧"} />
                       <ChatBubbleMessage className="bg-slate-700 p-0">
                         <PaymentCard key={index} payment={payment} account={account?.address} />
@@ -312,7 +316,7 @@ const FundMateChat = ({}) => {
             Select a chat to start messaging
           </div>
         )}
-        <StarsBackground className="pointer-events-none"/>
+        <StarsBackground className="pointer-events-none" />
       </div>
 
       {/* Modal Popup for username Setup */}
