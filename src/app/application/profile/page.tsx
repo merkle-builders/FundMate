@@ -1,5 +1,6 @@
 "use client";
-import React, { Suspense } from "react";
+
+import React, { useEffect, useState, Suspense } from "react";
 import { Linechart } from "@/components/ui/linechart";
 import ProfileIcon from "@/components/ui/icons/profileicon";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
@@ -10,12 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getUsername } from "@/view-functions/getUsername";
-import { useEffect, useState } from "react";
 
 export default function Profile() {
   const { account } = useWallet();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // This is client-only
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [profileAddress, setProfileAddress] = useState("");
@@ -57,9 +57,7 @@ export default function Profile() {
             <CardContent className="flex flex-col justify-center items-center">
               <div className="flex flex-col items-center mb-6 w-24 h-24">
                 <ProfileIcon />
-                <h2 className="text-xl font-semibold">
-                  {loading ? "Loading..." : username || "Username not found"} {/* Display loading state or username */}
-                </h2>
+                <h2 className="text-xl font-semibold">{loading ? "Loading..." : username || "Username not found"}</h2>
               </div>
               <div className="space-y-4 w-1/2">
                 <div>
