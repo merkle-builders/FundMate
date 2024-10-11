@@ -66,9 +66,9 @@ export const isValidWalletAddress = (address: string): boolean => {
   return walletAddressPattern.test(address);
 };
 
-// Function to validate custom text format (e.g., xyz@nexus)
+// Function to validate custom text format (e.g., xyz@fundmate)
 export const isValidCustomText = (text: string): boolean => {
-  const customTextPattern = /^[a-zA-Z0-9+_.-]+@nexus$/;
+  const customTextPattern = /^[a-zA-Z0-9+_.-]+@fundmate$/;
   return customTextPattern.test(text);
 };
 
@@ -82,8 +82,8 @@ export const formatDate = (timestamp: string): string => {
 
 export function parseReadableStringFromHex(hexStr: string) {
   hexStr = hexStr.slice(2);
-
-  const parts = hexStr.split(",");
-
-  return parts.map((part) => String.fromCharCode(parseInt(part))).join("");
+  const hexValues = hexStr.split(",").map((part) => parseInt(part, 10));
+  const byteArray = new Uint8Array(hexValues);
+  const decoder = new TextDecoder();
+  return decoder.decode(byteArray);
 }

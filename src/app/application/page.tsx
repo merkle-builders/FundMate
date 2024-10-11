@@ -282,7 +282,7 @@ const FundMateChat = ({}) => {
                 </ChatBubble>
               ))}
             </ChatMessageList>
-            <div className="p-4 border-t bg-slate-800 border-gray-600">
+            <div className="p-3 border-t bg-slate-800 border-gray-600">
               <div className="flex items-center">
                 <div className="flex gap-4 mb-4">
                   <HoverBorderGradient

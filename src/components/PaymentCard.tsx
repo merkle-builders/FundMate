@@ -4,16 +4,21 @@ import { Badge } from "./ui/badge";
 import { Payment } from '@/view-functions/getSentPayment';
 import { convertOctaToApt } from '@/core/utils';
 import { MoveAddressType } from '@aptos-labs/ts-sdk';
- interface PaymentCardProps {
+import { CircleCheckBig } from 'lucide-react';
+
+interface PaymentCardProps {
   payment: Payment
   account: MoveAddressType | undefined
  }
+
 const PaymentCard: React.FC<PaymentCardProps> = ({ payment, account })  => {
 
   return (
-    <Card className="w-full max-w-sm  bg-zinc-800 text-white border-gray-700">
+    <Card className="w-full max-w-sm  bg-zinc-900 text-white border-gray-700">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">{payment.sender == account ? "Payment Sent" : "Payment Received"}</CardTitle>
+        <CardTitle className="text-lg flex flex-row gap-2 font-semibold">{payment.sender == account ? "Payment Sent" : "Payment Received"}
+          <CircleCheckBig color='green' strokeWidth={3}/>
+        </CardTitle>
         <CardDescription className="text-gray-400">
           {payment.timestamp}
         </CardDescription>
@@ -21,7 +26,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ payment, account })  => {
       <CardContent>
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-medium">Amount:</span>
-          <Badge variant="secondary" className="text-green-400 bg-green-900">
+          <Badge variant="secondary" className={`${payment.sender == account ? "text-red-400 bg-red-900" : "text-green-400 bg-green-900" }`}>
             {convertOctaToApt(payment.amount)} APT
           </Badge>
         </div>
