@@ -1,4 +1,4 @@
-import { MoveValue, MoveVector } from "@aptos-labs/ts-sdk";
+import { MoveValue } from "@aptos-labs/ts-sdk";
 import { testnetClient } from "../core/constants";
 import { parseReadableStringFromHex } from "@/core/utils";
 export type Payment = {
@@ -33,22 +33,22 @@ export const getSentPayment = async (
       return null;
     }
 
-    const paymentResult = result[0] as MoveValue[]
+    const paymentResult = result[0] as MoveValue[];
     const payments: Payment[] = paymentResult?.map((payment: any, index: number) => {
       console.log(`Processing payment ${index}:`, JSON.stringify(payment));
 
       // Function to format the timestamp
       const formatTimestamp = (unixTimestamp: number): string => {
         const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
-        const formattedDate = date.toLocaleDateString('en-US', {
-          day: 'numeric',
-          month: 'short',  // 'short' gives the 3-letter abbreviation of the month
-          year: '2-digit',
+        const formattedDate = date.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short", // 'short' gives the 3-letter abbreviation of the month
+          year: "2-digit",
         });
-        const formattedTime = date.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
         });
         return `${formattedTime} ${formattedDate}`;
       };
