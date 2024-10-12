@@ -171,6 +171,8 @@ const FundMateChat = ({}) => {
     router.push("/");
   };
 
+  
+
   console.log("this is the recipient value:", recipient);
 
   return (

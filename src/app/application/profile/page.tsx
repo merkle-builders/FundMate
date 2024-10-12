@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getUsername } from "@/view-functions/getUsername";
 
+
 // Create a separate component for the content that uses useSearchParams
 const ProfileContent = () => {
   const { account } = useWallet();
