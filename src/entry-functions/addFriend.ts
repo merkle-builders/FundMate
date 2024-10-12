@@ -14,7 +14,7 @@ export const addFriend = (args: AddFriendArguments): InputTransactionData => {
   // Prepare and return the transaction payload for adding a friend
   return {
     data: {
-      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev1::add_friend",
+      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev2::add_friend",
       functionArguments: [
         formattedFriendAddress, // Friend's address as a hex string
       ],
