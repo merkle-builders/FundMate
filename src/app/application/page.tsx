@@ -27,6 +27,7 @@ import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
 import { sendPayment } from "@/entry-functions/sendPayment";
+// import { requestPayment } from "@/entry-functions/requestPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
@@ -152,6 +153,7 @@ const FundMateChat = ({}) => {
       setLoading(false);
     }
   };
+
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     console.log("inside");
