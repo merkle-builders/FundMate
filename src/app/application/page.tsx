@@ -26,6 +26,7 @@ import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
+import { getConversation, ConversationItem } from "@/view-functions/getConversation";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
 import { requestPayment } from "@/entry-functions/requestPayment";
@@ -53,6 +54,7 @@ const FundMateChat = ({}) => {
   const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestNote, setRequestNote] = useState("");
+  const [conversation, setConversation] = useState<ConversationItem[] | null > ();
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -83,6 +85,21 @@ const FundMateChat = ({}) => {
     getPayments();
   }, [recipient, account?.address]); // Adding recipient to the dependency array
 
+  useEffect(() => {
+   const getConvo = async() => {
+    if(selectedChat){
+      try{
+        const convo = await getConversation(account?.address, selectedChat);
+        setConversation(convo);
+        console.log("Sorted Conversation: ", conversation);
+      } catch (e){
+        console.log("Failed to get conversation: ", e)
+      }
+    }
+   };
+   getConvo();
+  }, [account?.address, selectedChat])
+  
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     const filtered = allUsers.filter(
