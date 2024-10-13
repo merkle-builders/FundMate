@@ -248,8 +248,6 @@ const FundMateChat = ({}) => {
               <DropdownMenuItem className="hover:cursor-pointer" onClick={() => router.push("/application/profile")}>
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuItem disabled>API</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="hover:cursor-pointer" onClick={() => handleDisconnect()}>
                 Log out
