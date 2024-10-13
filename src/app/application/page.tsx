@@ -317,28 +317,25 @@ const FundMateChat = ({}) => {
               </h2>
             </div>
             <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-full overflow-y-auto">
-              {sentPayments && sentPayments.length > 0 && (
+              {conversation && conversation.length > 0 && (
                 <>
-                  {sentPayments.map((payment, index) => (
-                    <ChatBubble
-                      className="mb-1 "
-                      key={index}
-                      variant={payment.sender === account?.address ? "sent" : "received"}
-                    >
-                      <ChatBubbleAvatar src="" fallback={payment.sender === account?.address ? "👦" : "👧"} />
-                      <ChatBubbleMessage className="bg-slate-700 p-0">
-                        <PaymentCard key={index} payment={payment} account={account?.address} />
-                      </ChatBubbleMessage>
-                    </ChatBubble>
-                  ))}
+                {conversation.map((convo, index) => (
+                  <ChatBubble
+                    className="mb-1 "
+                    key={index}
+                    variant={convo.sender === account?.address ? "sent" : "received"}
+                  >
+                    <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                    <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0": ""}`}>
+                      {convo.type === "payment" ? 
+                      <PaymentCard key={index} payment={convo} account={account?.address} /> :
+                      <>{convo.content}</>
+                      }
+                    </ChatBubbleMessage>
+                  </ChatBubble>
+                ))}
                 </>
               )}
-              {chatMessages.map((msg, index) => (
-                <ChatBubble key={index} variant={msg.role === "user" ? "sent" : "received"}>
-                  <ChatBubbleAvatar src="" fallback={msg.role === "user" ? "👦" : "👧"} />
-                  <ChatBubbleMessage>{msg.content}</ChatBubbleMessage>
-                </ChatBubble>
-              ))}
             </ChatMessageList>
             <div className="p-3 border-t bg-slate-800 border-gray-600">
               <div className="flex items-center">
