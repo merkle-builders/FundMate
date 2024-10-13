@@ -29,6 +29,11 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         user_name: String,
     }
 
+    struct GroupProfile has key {
+        group_name: String,
+        members: UserProfile    
+    }
+
     struct AllUsers has key {
         users: vector<UserInfo>,
     }
@@ -97,9 +102,14 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     const E_SELF_OPERATION_NOT_ALLOWED: u64 = 4;
     const E_NOT_FRIEND: u64 = 5;
     const E_INVALID_AMOUNT: u64 = 6;
+    const E_USER_ALREADY_INGROUP: u64 = 7;
 
     fun init_module(account: &signer) {
         move_to(account, AllUsers { users: vector::empty() });
+    }
+
+    public entry fun create_group(account:&signer, group_name: String) acquires UserProfile {
+
     }
 
     public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {

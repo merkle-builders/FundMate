@@ -36,6 +36,7 @@ import { VanishInput } from "@/components/ui/vanish-input";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
+import WriteIcon from "@/components/ui/icons/writeicon";
 
 const FundMateChat = ({}) => {
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
@@ -54,7 +55,8 @@ const FundMateChat = ({}) => {
   const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestNote, setRequestNote] = useState("");
-  const [conversation, setConversation] = useState<ConversationItem[] | null > ();
+  const [conversation, setConversation] = useState<ConversationItem[] | null>();
+  const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -84,20 +86,20 @@ const FundMateChat = ({}) => {
   }, [recipient, account?.address]); // Adding recipient to the dependency array
 
   useEffect(() => {
-   const getConvo = async() => {
-    if(selectedChat){
-      try{
-        const convo = await getConversation(account?.address, selectedChat);
-        setConversation(convo);
-        console.log("Sorted Conversation: ", conversation);
-      } catch (e){
-        console.log("Failed to get conversation: ", e)
+    const getConvo = async () => {
+      if (selectedChat) {
+        try {
+          const convo = await getConversation(account?.address, selectedChat);
+          setConversation(convo);
+          console.log("Sorted Conversation: ", conversation);
+        } catch (e) {
+          console.log("Failed to get conversation: ", e);
+        }
       }
-    }
-   };
-   getConvo();
-  }, [account?.address, selectedChat])
-  
+    };
+    getConvo();
+  }, [account?.address, selectedChat]);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     const filtered = allUsers.filter(
@@ -193,7 +195,7 @@ const FundMateChat = ({}) => {
       setLoading(false);
     }
   };
-  
+
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!message || !selectedChat) {
@@ -265,28 +267,42 @@ const FundMateChat = ({}) => {
           </div>
         </div>
 
-        <div className="overflow-y-auto flex-grow">
-          {filteredUsers
-            .filter((user) => user.address !== account?.address) // Exclude the logged-in user
-            .map((user) => (
-              <div
-                key={user.address}
-                className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
-                  selectedChat === user.address ? "bg-slate-700" : ""
-                }`}
-                onClick={() => setSelectedChat(user.address)}
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{user.username}</h3>
-                    <p className="text-sm text-gray-200 truncate">
-                      {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
-                    </p>
+        <div
+          className="flex flex-col h-full"
+          onMouseEnter={() => setIsChatListHover(true)}
+          onMouseLeave={() => setIsChatListHover(false)}
+        >
+          <div className="overflow-y-auto flex-grow">
+            {filteredUsers
+              .filter((user) => user.address !== account?.address) // Exclude the logged-in user
+              .map((user) => (
+                <div
+                  key={user.address}
+                  className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                    selectedChat === user.address ? "bg-slate-700" : ""
+                  }`}
+                  onClick={() => setSelectedChat(user.address)}
+                >
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
+                    <div className="flex-grow">
+                      <h3 className="font-semibold">{user.username}</h3>
+                      <p className="text-sm text-gray-200 truncate">
+                        {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
+                      </p>
+                    </div>
                   </div>
                 </div>
+              ))}
+
+            <div className="flex justify-end p-4 mt-[580px]">
+              <div
+                className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover ? "opacity-100" : "opacity-0"}`}
+              >
+                <WriteIcon />
               </div>
-            ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -319,21 +335,22 @@ const FundMateChat = ({}) => {
             <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-full overflow-y-auto">
               {conversation && conversation.length > 0 && (
                 <>
-                {conversation.map((convo, index) => (
-                  <ChatBubble
-                    className="mb-1 "
-                    key={index}
-                    variant={convo.sender === account?.address ? "sent" : "received"}
-                  >
-                    <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                    <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0": ""}`}>
-                      {convo.type === "payment" ? 
-                      <PaymentCard key={index} payment={convo} account={account?.address} /> :
-                      <>{convo.content}</>
-                      }
-                    </ChatBubbleMessage>
-                  </ChatBubble>
-                ))}
+                  {conversation.map((convo, index) => (
+                    <ChatBubble
+                      className="mb-1 "
+                      key={index}
+                      variant={convo.sender === account?.address ? "sent" : "received"}
+                    >
+                      <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                        {convo.type === "payment" ? (
+                          <PaymentCard key={index} payment={convo} account={account?.address} />
+                        ) : (
+                          <>{convo.content}</>
+                        )}
+                      </ChatBubbleMessage>
+                    </ChatBubble>
+                  ))}
                 </>
               )}
             </ChatMessageList>
@@ -348,9 +365,9 @@ const FundMateChat = ({}) => {
                   >
                     Pay
                   </HoverBorderGradient>
-                  <Button 
-                  className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-                  onClick={() => setIsShowRequestModal(true)}
+                  <Button
+                    className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                    onClick={() => setIsShowRequestModal(true)}
                   >
                     Request Payment
                   </Button>
@@ -490,7 +507,6 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };
