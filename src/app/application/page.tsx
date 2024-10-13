@@ -57,6 +57,7 @@ const FundMateChat = ({}) => {
   const [requestNote, setRequestNote] = useState("");
   const [conversation, setConversation] = useState<ConversationItem[] | null>();
   const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -296,11 +297,18 @@ const FundMateChat = ({}) => {
               ))}
 
             <div className="flex justify-end p-4 mt-[580px]">
-              <div
-                className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover ? "opacity-100" : "opacity-0"}`}
-              >
-                <WriteIcon />
-              </div>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <div
+                    className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
+                  >
+                    <WriteIcon />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-36">
+                  <DropdownMenuItem className="hover:cursor-pointer">Create Group</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
