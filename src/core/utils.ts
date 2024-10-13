@@ -87,3 +87,17 @@ export function parseReadableStringFromHex(hexStr: string) {
   const decoder = new TextDecoder();
   return decoder.decode(byteArray);
 }
+
+export const formatTimestamp = (unixTimestamp: number): string => {
+  const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+  const formattedDate = date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short", // 'short' gives the 3-letter abbreviation of the month
+    year: "2-digit",
+  });
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${formattedTime} ${formattedDate}`;
+};

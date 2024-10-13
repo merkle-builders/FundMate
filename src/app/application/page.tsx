@@ -166,7 +166,6 @@ const FundMateChat = ({}) => {
     try {
       setLoading(true);
       const requestData = requestPayment({
-        accountAddress: account?.address,
         requesteeAddress: selectedChat,
         amount: parseInt(requestAmount, 10),
         note: requestNote,
@@ -467,7 +466,7 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
     </div>
   );
 };
