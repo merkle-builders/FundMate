@@ -51,7 +51,7 @@ const FundMateChat = ({}) => {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sentPayments, setSentPayments] = useState<Payment[] | null>();
+  const [, setSentPayments] = useState<Payment[] | null>();
   const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestNote, setRequestNote] = useState("");
