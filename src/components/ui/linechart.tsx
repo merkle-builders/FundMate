@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { Payment } from "@/view-functions/getSentPayment";
+// import { Payment } from "@/view-functions/getSentPayment";
 
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
