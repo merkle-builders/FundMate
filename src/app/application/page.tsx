@@ -65,7 +65,6 @@ const FundMateChat = ({}) => {
       const users = await getAllUsers();
       setAllUsers(users);
       setFilteredUsers(users);
-      console.log(typeof users[0].address);
     };
     fetchAllUsers();
   }, []);
@@ -76,7 +75,6 @@ const FundMateChat = ({}) => {
         try {
           const payment = await getSentPayment(account?.address, recipient);
           setSentPayments(payment);
-          console.log("Sent Payments: ", sentPayments);
         } catch (error) {
           console.error("Failed to get payment:", error);
         }
@@ -127,10 +125,8 @@ const FundMateChat = ({}) => {
   }, [chatMessages]);
 
   useEffect(() => {
-    console.log("Selected chat: ", selectedChat);
     const foundUser = filteredUsers.find((user) => user.address === selectedChat);
     if (foundUser) setRecipient(foundUser?.address);
-    console.log("Recipient: ", recipient);
   }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
 
   const handleCreateProfile = async () => {
@@ -234,10 +230,6 @@ const FundMateChat = ({}) => {
     await disconnect();
     router.push("/");
   };
-
-  
-
-  console.log("this is the recipient value:", recipient);
 
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
