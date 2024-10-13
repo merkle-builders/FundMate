@@ -27,7 +27,7 @@ import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
 import { sendPayment } from "@/entry-functions/sendPayment";
-// import { requestPayment } from "@/entry-functions/requestPayment";
+import { requestPayment } from "@/entry-functions/requestPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
@@ -50,6 +50,9 @@ const FundMateChat = ({}) => {
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [sentPayments, setSentPayments] = useState<Payment[] | null>();
+  const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
+  const [requestAmount, setRequestAmount] = useState("");
+  const [requestNote, setRequestNote] = useState("");
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -154,7 +157,32 @@ const FundMateChat = ({}) => {
     }
   };
 
+  const handleRequestPayment = async () => {
+    if (!selectedChat || !requestAmount) {
+      alert("Please fill in all the required fields");
+      return;
+    }
 
+    try {
+      setLoading(true);
+      const requestData = requestPayment({
+        accountAddress: account?.address,
+        requesteeAddress: selectedChat,
+        amount: parseInt(requestAmount, 10),
+        note: requestNote,
+      });
+
+      const result = await signAndSubmitTransaction(requestData);
+      console.log("Payment request sent:", result);
+
+      setIsShowRequestModal(false);
+    } catch (error) {
+      console.error("Payment request failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     console.log("inside");
     e.preventDefault();
@@ -297,7 +325,10 @@ const FundMateChat = ({}) => {
                   >
                     Pay
                   </HoverBorderGradient>
-                  <Button className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                  <Button 
+                  className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                  onClick={() => setIsShowRequestModal(true)}
+                  >
                     Request Payment
                   </Button>
                 </div>
@@ -396,6 +427,47 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Modal for Payment Request */}
+      <Dialog open={isShowRequestModal}>
+        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Request a Payment</DialogTitle>
+            <DialogDescription>Enter the payment request details.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="requestAmount" className="text-right">
+                Amount
+              </Label>
+              <Input
+                type="number"
+                value={requestAmount}
+                onChange={(e) => setRequestAmount(e.target.value)}
+                id="requestAmount"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="requestNote" className="text-right">
+                Note
+              </Label>
+              <Input
+                value={requestNote}
+                onChange={(e) => setRequestNote(e.target.value)}
+                id="requestNote"
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleRequestPayment} disabled={loading}>
+              {loading ? "Sending Request..." : "Send Request"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
     </div>
   );
 };

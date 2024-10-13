@@ -2,7 +2,7 @@ import { MoveAddressType } from "@aptos-labs/ts-sdk";
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
 
 export type RequestPaymentArguments = {
-  accountAddress: MoveAddressType;
+  accountAddress: MoveAddressType | undefined;
   requesteeAddress: MoveAddressType;
   amount: number; 
   note: string; 
