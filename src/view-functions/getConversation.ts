@@ -3,22 +3,26 @@ import { testnetClient } from "../core/constants";
 import { parseReadableStringFromHex, formatTimestamp } from "@/core/utils";
 
 export type Message = {
+  type: 'message';
   sender: MoveAddressType;
   content: string;
   timestamp: string;
 };
 
 export type Payment = {
+  type: 'payment';
   sender: string;
   amount: number;
   note: string;
   timestamp: string;
 };
 
+export type ConversationItem = Message | Payment;
+
 export const getConversation = async (
   sender: string | undefined,
   recipientAddress: string
-): Promise<{ messages: Message[]; payments: Payment[] } | null> => {
+): Promise<ConversationItem[] | null> => {
   try {
     if (!sender) {
       console.error("Sender address is undefined");
@@ -41,20 +45,29 @@ export const getConversation = async (
     const [messagesResult, paymentsResult] = result as [MoveValue[], MoveValue[]];
 
     const messages: Message[] = messagesResult.map((message: any) => ({
+      type: 'message',
       sender: message.sender,
       content: parseReadableStringFromHex(String(message.content)),
       timestamp: formatTimestamp(Number(message.timestamp)),
     }));
 
     const payments: Payment[] = paymentsResult.map((payment: any) => ({
+      type: 'payment',
       sender: String(payment.sender),
       amount: Number(payment.amount),
       note: parseReadableStringFromHex(String(payment.note)),
       timestamp: formatTimestamp(Number(payment.timestamp)),
     }));
 
-    console.log("Messages: ", messages, "Payment: ", payments)
-    return { messages, payments };
+    const combinedItems: ConversationItem[] = [...messages, ...payments];
+
+    // Sort the combined array by timestamp
+    const sortedItems = combinedItems.sort((a, b) =>
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    console.log("Sorted conversation items: ", sortedItems);
+    return sortedItems;
   } catch (err) {
     console.error("Something went wrong:", err);
     return null;
