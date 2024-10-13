@@ -9,15 +9,14 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     use std::signer;
     use std::string::String;
     
-    // Structs
     struct UserProfile has key {
         user_name: String,
         friends: vector<address>,
         conversations: Table<address, Conversation>,
         sent_payment_requests: Table<address, vector<PaymentRequest>>,
         received_payment_requests: Table<address, vector<PaymentRequest>>,
-        requestees: vector<address>, // New: Track addresses to whom requests were sent
-        requesters: vector<address>, // New: Track addresses from whom requests were received
+        requestees: vector<address>,
+        requesters: vector<address>,
         user_created_events: event::EventHandle<UserCreatedEvent>,
         friend_added_events: event::EventHandle<FriendAddedEvent>,
         payment_sent_events: event::EventHandle<PaymentSentEvent>,
@@ -60,7 +59,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         timestamp: u64,
     }
 
-    // Events
     #[event]
     struct UserCreatedEvent has drop, store {
         user_address: address,
@@ -93,7 +91,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         amount: u64,
     }
 
-    // Error codes
     const E_USER_ALREADY_EXISTS: u64 = 1;
     const E_USER_NOT_FOUND: u64 = 2;
     const E_INSUFFICIENT_BALANCE: u64 = 3;
@@ -101,12 +98,10 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     const E_NOT_FRIEND: u64 = 5;
     const E_INVALID_AMOUNT: u64 = 6;
 
-    // Initialize the contract
     fun init_module(account: &signer) {
         move_to(account, AllUsers { users: vector::empty() });
     }
 
-    // Create a new user profile
     public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
         let signer_address = signer::address_of(account);
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
@@ -128,15 +123,13 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
 
         move_to(account, user_profile);
 
-        // Add UserInfo to AllUsers list
         let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);
         vector::push_back(&mut all_users.users, UserInfo { address: signer_address, user_name });
 
         event::emit_event(&mut borrow_global_mut<UserProfile>(signer_address).user_created_events, 
-                          UserCreatedEvent { user_address: signer_address, user_name });
+        UserCreatedEvent { user_address: signer_address, user_name });
     }
     
-    // Add a friend
     public entry fun add_friend(account: &signer, friend_address: address) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -156,7 +149,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         }
     }
 
-    // Send a payment
     public entry fun send_payment(
         account: &signer,
         recipient: address,
@@ -219,7 +211,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         };
     }
 
-    // Send a message
     public entry fun send_message(account: &signer, recipient: address, content: String) acquires UserProfile {
         let signer_address = signer::address_of(account);
         assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
@@ -234,7 +225,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
             timestamp: timestamp::now_seconds(),
         };
 
-        // Add message to sender's conversation
         let sender_conversation = table::borrow_mut(&mut sender_profile.conversations, recipient);
         vector::push_back(&mut sender_conversation.messages, message);
 
@@ -247,7 +237,7 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     }
 
     // Request a payment
-    
+
     public entry fun request_payment(
         account: &signer,
         requestee: address,

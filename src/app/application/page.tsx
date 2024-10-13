@@ -27,6 +27,7 @@ import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
 import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
 import { sendPayment } from "@/entry-functions/sendPayment";
+import { sendMessage } from "@/entry-functions/sendMessage";
 import { requestPayment } from "@/entry-functions/requestPayment";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
@@ -43,7 +44,6 @@ const FundMateChat = ({}) => {
   const [userName, setUserName] = useState("");
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  // const [searchTerm, setSearchTerm] = useState("");
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
@@ -85,7 +85,6 @@ const FundMateChat = ({}) => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
-    // setSearchTerm(term);
     const filtered = allUsers.filter(
       (user) => user.username.toLowerCase().includes(term) || user.address.toLowerCase().includes(term),
     );
@@ -182,12 +181,31 @@ const FundMateChat = ({}) => {
     }
   };
   
-  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("inside");
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!message || !selectedChat) {
+      alert("Please select a chat and type a message");
+      return;
+    }
     if (message.trim()) {
-      setChatMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]);
-      setMessage("");
+      try {
+        setLoading(true);
+        const messageData = sendMessage({
+          recipientAddress: selectedChat,
+          messageContent: message,
+        });
+
+        const result = await signAndSubmitTransaction(messageData);
+        console.log("Message sent:", result);
+
+        setChatMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]);
+        setMessage("");
+      } catch (error) {
+        console.error("Failed to send message:", error);
+        alert("Failed to send message. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

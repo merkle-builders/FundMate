@@ -20,16 +20,16 @@ export const convertAptToOcta = (transferAmount: number) => {
 
 export const getAddressAsString = (address: any): any => {
   if (typeof address === "string") {
-    return address; // It's already a string
+    return address; 
   } else if (Array.isArray(address)) {
-    return address[0] || ""; // Ensure the array has an element
+    return address[0] || "";
   } else if (typeof address === "object" && address !== null) {
     const values = Object.values(address);
     if (typeof values[0] === "string") {
-      return values[0] as string; // Return the first value as a string
+      return values[0] as string;
     }
   }
-  return ""; // Default fallback if address is not usable
+  return ""; 
 };
 
 export const loadStateFromLocalStorage = () => {
@@ -62,11 +62,10 @@ export const getStoredAddress = (): string | undefined => {
 };
 
 export const isValidWalletAddress = (address: string): boolean => {
-  const walletAddressPattern = /^0x[a-fA-F0-9]{64}$/; // Ethereum-like address pattern
+  const walletAddressPattern = /^0x[a-fA-F0-9]{64}$/;
   return walletAddressPattern.test(address);
 };
 
-// Function to validate custom text format (e.g., xyz@fundmate)
 export const isValidCustomText = (text: string): boolean => {
   const customTextPattern = /^[a-zA-Z0-9+_.-]+@fundmate$/;
   return customTextPattern.test(text);
@@ -75,13 +74,15 @@ export const isValidCustomText = (text: string): boolean => {
 export const formatDate = (timestamp: string): string => {
   const date = new Date(timestamp);
   const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
 export function parseReadableStringFromHex(hexStr: string) {
-  hexStr = hexStr.slice(2);
+  if(hexStr[0] == "0" &&  hexStr[1] == "x"){
+    hexStr = hexStr.slice(2);
+  }
   const hexValues = hexStr.split(",").map((part) => parseInt(part, 10));
   const byteArray = new Uint8Array(hexValues);
   const decoder = new TextDecoder();
@@ -89,10 +90,10 @@ export function parseReadableStringFromHex(hexStr: string) {
 }
 
 export const formatTimestamp = (unixTimestamp: number): string => {
-  const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+  const date = new Date(unixTimestamp * 1000);
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
-    month: "short", // 'short' gives the 3-letter abbreviation of the month
+    month: "short", 
     year: "2-digit",
   });
   const formattedTime = date.toLocaleTimeString("en-US", {
