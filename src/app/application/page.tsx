@@ -30,6 +30,7 @@ import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
 import { requestPayment } from "@/entry-functions/requestPayment";
 import { createGroup } from "@/entry-functions/createGroup";
+import { getGroups } from "@/view-functions/getGroups";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
@@ -37,6 +38,16 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
+
+type ProcessedUserInfo = {
+  address: string;
+  username: string;
+};
+
+type ProcessedGroupInfo = {
+  groupName: string;
+  members: ProcessedUserInfo[];
+};
 
 const FundMateChat = ({}) => {
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
@@ -59,6 +70,7 @@ const FundMateChat = ({}) => {
   const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
   const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo | null>(null);
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -118,6 +130,15 @@ const FundMateChat = ({}) => {
     const foundUser = filteredUsers.find((user) => user.address === selectedChat);
     if (foundUser) setRecipient(foundUser?.address);
   }, [filteredUsers, selectedChat]); // Dependencies to trigger the effect when these change
+
+  useEffect(() => {
+    const fetchAllGroups = async () => {
+      const groups = await getGroups(account?.address);
+      setGroupInformation(groups);
+    };
+    fetchAllGroups();
+    console.log("Group information is:", getGroups);
+  }, []);
 
   const handleCreateProfile = async () => {
     if (!userName) {
@@ -516,7 +537,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal for Group creation */}
       <Dialog open={isShowGroupModal}>
-        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Group Creation</DialogTitle>
             <DialogDescription>Enter your Group description</DialogDescription>
