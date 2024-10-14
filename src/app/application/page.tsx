@@ -359,6 +359,8 @@ const FundMateChat = ({}) => {
         </div>
       </div>
 
+      {/* Group chat area*/}
+
       {/* Chat area */}
       <div className="flex-grow flex flex-col">
         {selectedChat ? (
