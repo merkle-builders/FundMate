@@ -37,7 +37,6 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
-import { StringDecoder } from "string_decoder";
 
 const FundMateChat = ({}) => {
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
@@ -161,7 +160,14 @@ const FundMateChat = ({}) => {
   };
 
   const handleGroupCreation = async () => {
-    let newGroup = createGroup();
+    try {
+      const newGroup = createGroup({ groupName: groupName });
+
+      const result = await signAndSubmitTransaction(newGroup);
+      console.log("Group creation request is:", result);
+    } catch (error) {
+      console.log("Group creation failed", error);
+    }
   };
 
   const handleRequestPayment = async () => {
@@ -521,7 +527,6 @@ const FundMateChat = ({}) => {
                 Group Name
               </Label>
               <Input
-                type="string"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 id="groupName"
