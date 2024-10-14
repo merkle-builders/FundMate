@@ -255,7 +255,7 @@ const FundMateChat = ({}) => {
     router.push("/");
   };
 
-  console.log("full group list", groupArray);
+  console.log("selected group is:", groupArray);
 
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
