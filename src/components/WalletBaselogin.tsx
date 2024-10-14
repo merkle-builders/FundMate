@@ -1,6 +1,7 @@
 "use client";
 // Internal components
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -18,10 +19,11 @@ import {
   WalletItem,
   groupAndSortWallets,
   isAptosConnectWallet,
+  isInstallRequired,
   truncateAddress,
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
-import { ArrowLeft, ArrowRight, Copy, LogOut, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Copy, LogOut, User } from "lucide-react";
 import { useCallback, useState } from "react";
 
 export function WalletBaselogin() {
@@ -85,9 +87,11 @@ interface ConnectWalletDialogProps {
 
 function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
   const { wallets = [] } = useWallet();
-  const { aptosConnectWallets } = groupAndSortWallets(wallets);
+  const { aptosConnectWallets, availableWallets } = groupAndSortWallets(wallets);
 
   const hasAptosConnectWallets = !!aptosConnectWallets.length;
+
+  const firstAvailableWallet = availableWallets.length > 0 ? [availableWallets[0]] : [];
 
   return (
     <DialogContent className="max-h-screen overflow-auto">
@@ -101,7 +105,6 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
             )}
           </DialogTitle>
         </DialogHeader>
-
         {hasAptosConnectWallets && (
           <div className="flex flex-col gap-2 pt-3">
             {aptosConnectWallets.map((wallet) => (
@@ -116,8 +119,20 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
               </p>
               <AptosPrivacyPolicy.PoweredBy className="flex gap-1.5 items-center text-xs leading-5 text-muted-foreground" />
             </AptosPrivacyPolicy>
+            <div className="flex items-center gap-3 pt-4 text-muted-foreground">
+              <div className="h-px w-full bg-secondary" />
+              Or
+              <div className="h-px w-full bg-secondary" />
+            </div>
           </div>
         )}
+        <div className="flex flex-col gap-3 pt-3">
+          {" "}
+          {firstAvailableWallet.map((wallet) => (
+            <WalletRow key={wallet.name} wallet={wallet} onConnect={close} />
+          ))}
+        </div>
+        ;
       </AboutAptosConnect>
     </DialogContent>
   );
@@ -126,6 +141,30 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
 interface WalletRowProps {
   wallet: AnyAptosWallet;
   onConnect?: () => void;
+}
+
+function WalletRow({ wallet, onConnect }: WalletRowProps) {
+  return (
+    <WalletItem
+      wallet={wallet}
+      onConnect={onConnect}
+      className="flex items-center justify-between px-4 py-3 gap-4 border rounded-md"
+    >
+      <div className="flex items-center gap-4">
+        <WalletItem.Icon className="h-6 w-6" />
+        <WalletItem.Name className="text-base font-normal" />
+      </div>
+      {isInstallRequired(wallet) ? (
+        <Button size="sm" variant="ghost" asChild>
+          <WalletItem.InstallLink />
+        </Button>
+      ) : (
+        <WalletItem.ConnectButton asChild>
+          <Button size="sm">Connect</Button>
+        </WalletItem.ConnectButton>
+      )}
+    </WalletItem>
+  );
 }
 
 function AptosConnectWalletRow({ wallet, onConnect }: WalletRowProps) {

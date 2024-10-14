@@ -314,7 +314,6 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         group_created_events: account::new_event_handle<GroupCreatedEvent>(account), // Initialize the EventHandle
     };
     
-
         move_to(account, user_profile);
 
         let all_users = borrow_global_mut<AllUsers>(@0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435);

@@ -278,7 +278,7 @@ const FundMateChat = ({}) => {
                 </div>
               ))}
 
-            <div className="flex justify-end p-4 mt-[580px]">
+            <div className="flex justify-end p-4 mt-[650px]">
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <div
