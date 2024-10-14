@@ -38,7 +38,6 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
-import { group } from "console";
 
 type ProcessedUserInfo = {
   address: string;
@@ -71,7 +70,7 @@ const FundMateChat = ({}) => {
   const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
   const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo>();
+  const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo[] | null>(null);
 
   const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
 
@@ -300,8 +299,19 @@ const FundMateChat = ({}) => {
               groupArray.map(
                 (group, index) =>
                   group && (
-                    <div key={index}>
-                      <h2>{group.groupName}</h2>
+                    <div
+                      key={index}
+                      className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                        selectedChat === groupName ? "bg-slate-700" : ""
+                      }`}
+                      onClick={() => setSelectedChat(groupName)}
+                    >
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
+                        <div className="flex-grow">
+                          <h2>{group.groupName}</h2>
+                        </div>{" "}
+                      </div>
                     </div>
                   ),
               )}

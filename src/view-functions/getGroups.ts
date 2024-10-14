@@ -13,7 +13,7 @@ type ProcessedGroupInfo = {
 };
 
 // Function to get group details
-export async function getGroups(groupCreator: string | undefined): Promise<ProcessedGroupInfo | null> {
+export async function getGroups(groupCreator: string | undefined): Promise<ProcessedGroupInfo[] | null> {
   try {
     const result = await testnetClient.view({
       payload: {
@@ -47,7 +47,7 @@ export async function getGroups(groupCreator: string | undefined): Promise<Proce
         }));
 
         console.log("Processed group details:", { groupName, members });
-        return { groupName, members };
+        return [{ groupName, members }];
       } else {
         console.error("Raw members is not an array or is undefined");
         return null;
