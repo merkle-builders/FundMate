@@ -38,6 +38,7 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
+import { group } from "console";
 
 type ProcessedUserInfo = {
   address: string;
@@ -70,7 +71,9 @@ const FundMateChat = ({}) => {
   const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
   const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo | null>(null);
+  const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo>();
+
+  const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
   const router = useRouter();
@@ -253,6 +256,8 @@ const FundMateChat = ({}) => {
     router.push("/");
   };
 
+  console.log("full group list", groupArray);
+
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
       {/* Main sidebar */}
@@ -291,6 +296,16 @@ const FundMateChat = ({}) => {
           onMouseLeave={() => setIsChatListHover(false)}
         >
           <div className="overflow-y-auto flex-grow">
+            {groupArray &&
+              groupArray.map(
+                (group, index) =>
+                  group && (
+                    <div key={index}>
+                      <h2>{group.groupName}</h2>
+                    </div>
+                  ),
+              )}
+
             {filteredUsers
               .filter((user) => user.address !== account?.address) // Exclude the logged-in user
               .map((user) => (
