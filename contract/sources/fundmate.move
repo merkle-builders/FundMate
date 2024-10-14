@@ -22,6 +22,8 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         payment_sent_events: event::EventHandle<PaymentSentEvent>,
         message_sent_events: event::EventHandle<MessageSentEvent>,
         payment_requested_events: event::EventHandle<PaymentRequestedEvent>,
+        group_created_events: event::EventHandle<GroupCreatedEvent>, // Change to EventHandle
+
     }
     
     struct UserInfo has store, drop, copy {
@@ -30,9 +32,9 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
     }
 
     struct GroupProfile has key {
-        group_name: String,
-        members: UserProfile    
-    }
+    group_name: String,
+    members: vector<address>, // Changed from UserProfile to vector of addresses
+}
 
     struct AllUsers has key {
         users: vector<UserInfo>,
@@ -96,6 +98,12 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         amount: u64,
     }
 
+    #[event]
+    struct GroupCreatedEvent has store, drop { // Add 'store' and 'drop' abilities
+        user_address: address,
+        group_name: String,
+    }
+
     const E_USER_ALREADY_EXISTS: u64 = 1;
     const E_USER_NOT_FOUND: u64 = 2;
     const E_INSUFFICIENT_BALANCE: u64 = 3;
@@ -108,8 +116,24 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         move_to(account, AllUsers { users: vector::empty() });
     }
 
-    public entry fun create_group(account:&signer, group_name: String) acquires UserProfile {
+    public entry fun create_group(account: &signer, group_name: String) acquires UserProfile {
+        let signer_address = signer::address_of(account);
+        assert!(exists<UserProfile>(signer_address), E_USER_NOT_FOUND);
 
+        // Initialize a new group profile
+        let group_profile = GroupProfile {
+            group_name,
+            members: vector::empty<address>(),
+        };
+
+        // Move the group profile to the sender's account
+        move_to(account, group_profile);
+
+        // Optionally, emit an event for group creation
+        event::emit_event(
+        &mut borrow_global_mut<UserProfile>(signer_address).group_created_events,
+        GroupCreatedEvent { user_address: signer_address, group_name },
+);
     }
 
     public entry fun create_id(account: &signer, user_name: String) acquires AllUsers, UserProfile {
@@ -117,19 +141,21 @@ module 0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundm
         assert!(!exists<UserProfile>(signer_address), E_USER_ALREADY_EXISTS);
 
         let user_profile = UserProfile {
-            user_name,
-            friends: vector::empty(),
-            conversations: table::new(),
-            sent_payment_requests: table::new(),
-            received_payment_requests: table::new(),
-            requestees: vector::empty(), // Initialize empty vector
-            requesters: vector::empty(), // Initialize empty vector
-            user_created_events: account::new_event_handle<UserCreatedEvent>(account),
-            friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
-            payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
-            message_sent_events: account::new_event_handle<MessageSentEvent>(account),
-            payment_requested_events: account::new_event_handle<PaymentRequestedEvent>(account),
-        };
+        user_name,
+        friends: vector::empty(),
+        conversations: table::new(),
+        sent_payment_requests: table::new(),
+        received_payment_requests: table::new(),
+        requestees: vector::empty(),
+        requesters: vector::empty(),
+        user_created_events: account::new_event_handle<UserCreatedEvent>(account),
+        friend_added_events: account::new_event_handle<FriendAddedEvent>(account),
+        payment_sent_events: account::new_event_handle<PaymentSentEvent>(account),
+        message_sent_events: account::new_event_handle<MessageSentEvent>(account),
+        payment_requested_events: account::new_event_handle<PaymentRequestedEvent>(account),
+        group_created_events: account::new_event_handle<GroupCreatedEvent>(account), // Initialize the EventHandle
+    };
+    
 
         move_to(account, user_profile);
 
