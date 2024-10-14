@@ -126,12 +126,10 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
           </div>
         )}
         <div className="flex flex-col gap-3 pt-3">
-          {" "}
           {firstAvailableWallet.map((wallet) => (
             <WalletRow key={wallet.name} wallet={wallet} onConnect={close} />
           ))}
         </div>
-        ;
       </AboutAptosConnect>
     </DialogContent>
   );
