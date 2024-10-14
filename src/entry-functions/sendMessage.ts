@@ -15,7 +15,7 @@ export const sendMessage = (args: WriteMessageArguments): InputTransactionData =
   const messageContentArray = Array.from(messageContentBytes);
   return {
     data: {
-      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev2::send_message",
+      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev4::send_message",
       functionArguments: [recipientAddress, `0x${messageContentArray}`],
       typeArguments: [],
     },

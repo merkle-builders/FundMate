@@ -19,7 +19,7 @@ export const sendPayment = (args: SendPaymentArguments): InputTransactionData =>
 
   return {
     data: {
-      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev2::send_payment",
+      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev4::send_payment",
       functionArguments: [
         recipientAddress, 
         amount,

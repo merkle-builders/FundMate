@@ -25,7 +25,6 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
-import { getSentPayment, Payment } from "@/view-functions/getSentPayment";
 import { getConversation, ConversationItem } from "@/view-functions/getConversation";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
@@ -51,7 +50,6 @@ const FundMateChat = ({}) => {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
-  const [, setSentPayments] = useState<Payment[] | null>();
   const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestNote, setRequestNote] = useState("");
@@ -71,20 +69,6 @@ const FundMateChat = ({}) => {
     };
     fetchAllUsers();
   }, []);
-
-  useEffect(() => {
-    const getPayments = async () => {
-      if (recipient) {
-        try {
-          const payment = await getSentPayment(account?.address, recipient);
-          setSentPayments(payment);
-        } catch (error) {
-          console.error("Failed to get payment:", error);
-        }
-      }
-    };
-    getPayments();
-  }, [recipient, account?.address]); // Adding recipient to the dependency array
 
   useEffect(() => {
     const getConvo = async () => {

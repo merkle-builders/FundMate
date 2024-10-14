@@ -19,7 +19,7 @@ export const createId = (args: CreateIdArguments): InputTransactionData => {
 
   return {
     data: {
-      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev2::create_id",
+      function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev4::create_id",
       functionArguments: [
         `0x${userNameArray}`, 
       ],
