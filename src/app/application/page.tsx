@@ -310,7 +310,8 @@ const FundMateChat = ({}) => {
                         <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
                         <div className="flex-grow">
                           <h2>{group.groupName}</h2>
-                        </div>{" "}
+                          <p className="text-sm text-gray-200 truncate">0 Members</p>
+                        </div>
                       </div>
                     </div>
                   ),
