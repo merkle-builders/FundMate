@@ -359,11 +359,36 @@ const FundMateChat = ({}) => {
         </div>
       </div>
 
-      {/* Group chat area*/}
-
       {/* Chat area */}
       <div className="flex-grow flex flex-col">
-        {selectedChat ? (
+        {selectedChat === groupName ? (
+          <>
+            <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">{/* Group Chat Header */}</div>
+            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-3/4 overflow-y-auto">
+              {conversation && conversation.length > 0 && (
+                <>
+                  {conversation.map((convo, index) => (
+                    <ChatBubble
+                      className="mb-1"
+                      key={index}
+                      variant={convo.sender === account?.address ? "sent" : "received"}
+                    >
+                      <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                        {convo.type === "payment" ? (
+                          <PaymentCard key={index} payment={convo} account={account?.address} />
+                        ) : (
+                          <>{convo.content}</>
+                        )}
+                      </ChatBubbleMessage>
+                    </ChatBubble>
+                  ))}
+                </>
+              )}
+            </ChatMessageList>
+            <div className="w-1/4"></div>
+          </>
+        ) : selectedChat ? (
           <>
             <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">
               <DropdownMenu>
@@ -392,7 +417,7 @@ const FundMateChat = ({}) => {
                 <>
                   {conversation.map((convo, index) => (
                     <ChatBubble
-                      className="mb-1 "
+                      className="mb-1"
                       key={index}
                       variant={convo.sender === account?.address ? "sent" : "received"}
                     >
