@@ -29,6 +29,7 @@ import { getConversation, ConversationItem } from "@/view-functions/getConversat
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
 import { requestPayment } from "@/entry-functions/requestPayment";
+import { createGroup } from "@/entry-functions/createGroup";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { VanishInput } from "@/components/ui/vanish-input";
@@ -36,25 +37,28 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
+import { StringDecoder } from "string_decoder";
 
 const FundMateChat = ({}) => {
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string>("");
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [isShowPayModal, setIsShowPayModal] = useState<boolean>(false);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState<string>("");
+  const [groupName, setGroupName] = useState<string>("");
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
-  const [recipient, setRecipient] = useState("");
+  const [recipient, setRecipient] = useState<string>("");
   const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isShowRequestModal, setIsShowRequestModal] = useState<boolean>(false);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestNote, setRequestNote] = useState("");
   const [conversation, setConversation] = useState<ConversationItem[] | null>();
   const [isChatListHover, setIsChatListHover] = useState<boolean>(false);
+  const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { account, signAndSubmitTransaction, disconnect } = useWallet();
@@ -154,6 +158,11 @@ const FundMateChat = ({}) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGroupCreation = () => {
+    setGroupName();
+    let newGroup = createGroup();
   };
 
   const handleRequestPayment = async () => {
@@ -278,7 +287,7 @@ const FundMateChat = ({}) => {
                 </div>
               ))}
 
-            <div className="flex justify-end p-4 mt-[650px]">
+            <div className="flex justify-end p-4 mt-[570px]">
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <div
@@ -288,7 +297,9 @@ const FundMateChat = ({}) => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-36">
-                  <DropdownMenuItem className="hover:cursor-pointer">Create Group</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
+                    Create Group
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -495,6 +506,30 @@ const FundMateChat = ({}) => {
               {loading ? "Sending Request..." : "Send Request"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Group creation */}
+      <Dialog open={isShowGroupModal}>
+        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Group Creation</DialogTitle>
+            <DialogDescription>Enter your Group description</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="requestAmount" className="text-right">
+                Group Name
+              </Label>
+              <Input
+                type="string"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                id="groupName"
+                className="col-span-3"
+              />
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
