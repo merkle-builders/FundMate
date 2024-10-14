@@ -160,8 +160,7 @@ const FundMateChat = ({}) => {
     }
   };
 
-  const handleGroupCreation = () => {
-    setGroupName();
+  const handleGroupCreation = async () => {
     let newGroup = createGroup();
   };
 
@@ -530,6 +529,11 @@ const FundMateChat = ({}) => {
               />
             </div>
           </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleGroupCreation} disabled={loading}>
+              Create Group
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
