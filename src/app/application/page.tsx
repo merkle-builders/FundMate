@@ -365,28 +365,47 @@ const FundMateChat = ({}) => {
       <div className={`flex-grow flex ${selectedChat === groupName ? "flex-row" : "flex-col"}`}>
         {selectedChat === groupName ? (
           <>
-            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-3/4 overflow-y-auto">
-              {conversation && conversation.length > 0 && (
-                <>
-                  {conversation.map((convo, index) => (
-                    <ChatBubble
-                      className="mb-1"
-                      key={index}
-                      variant={convo.sender === account?.address ? "sent" : "received"}
-                    >
-                      <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
-                        {convo.type === "payment" ? (
-                          <PaymentCard key={index} payment={convo} account={account?.address} />
-                        ) : (
-                          <>{convo.content}</>
-                        )}
-                      </ChatBubbleMessage>
-                    </ChatBubble>
-                  ))}
-                </>
-              )}
-            </ChatMessageList>
+            <div className="w-3/4">
+              <ChatMessageList
+                ref={messagesRef}
+                className="flex-grow justify-end bg-slate-950 overflow-y-auto h-full w-full p-0"
+              >
+                {conversation && conversation.length > 0 && (
+                  <>
+                    {conversation.map((convo, index) => (
+                      <ChatBubble
+                        className="mb-1"
+                        key={index}
+                        variant={convo.sender === account?.address ? "sent" : "received"}
+                      >
+                        <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                        <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                          {convo.type === "payment" ? (
+                            <PaymentCard key={index} payment={convo} account={account?.address} />
+                          ) : (
+                            <>{convo.content}</>
+                          )}
+                        </ChatBubbleMessage>
+                      </ChatBubble>
+                    ))}
+                  </>
+                )}
+                <div className=" p-3 border-t bg-slate-800 border-gray-600">
+                  <form onSubmit={handleSendMessage} className="flex items-center">
+                    <Input
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Write a message..."
+                      className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <Button type="submit" className="ml-2">
+                      <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
+                    </Button>
+                  </form>
+                </div>
+              </ChatMessageList>
+            </div>
+
             <div className="flex flex-col h-full w-1/4">
               <div className="flex flex-col p-3 border-t bg-slate-800 border-gray-600">
                 <h1 className="text-slate-200 text-center">Group Members</h1>
