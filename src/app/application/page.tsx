@@ -26,6 +26,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
+import { getGroupDetails } from "@/view-functions/getGroupDetails";
 import { getConversation, ConversationItem } from "@/view-functions/getConversation";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
@@ -73,6 +74,7 @@ const FundMateChat = ({}) => {
   const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo[] | null>(null);
+  const [groupData, setGroupData] = useState<ProcessedGroupInfo | null>(null);
 
   const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
 
@@ -292,12 +294,12 @@ const FundMateChat = ({}) => {
         </div>
 
         <div
-          className="flex flex-col h-full"
+          className="flex flex-col h-full relative" // Add 'relative' here
           onMouseEnter={() => setIsChatListHover(true)}
           onMouseLeave={() => setIsChatListHover(false)}
         >
           <div className="overflow-y-auto flex-grow">
-            <div className="relative">
+            <div className="relative h-full">
               {groupArray &&
                 groupArray.map(
                   (group, index) =>
