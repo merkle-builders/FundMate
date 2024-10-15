@@ -185,6 +185,8 @@ const FundMateChat = ({}) => {
       const result = await signAndSubmitTransaction(paymentData);
       console.log("Payment successful:", result);
 
+      // After successful payment, update the conversation
+      await updateConversation();
       setIsShowPayModal(false);
     } catch (error) {
       console.error("Payment failed:", error);
@@ -196,13 +198,36 @@ const FundMateChat = ({}) => {
   const handleGroupCreation = async () => {
     try {
       const newGroup = createGroup({ groupName: groupName });
-
       const result = await signAndSubmitTransaction(newGroup);
       console.log("Group creation request is:", result);
+
+      // After successful group creation, fetch all groups again
+      fetchAllGroups();
+      setIsShowGroupModal(false);
     } catch (error) {
       console.log("Group creation failed", error);
     }
   };
+
+  const fetchAllGroups = async () => {
+    const groups = await getGroups(account?.address);
+    setGroupInformation(groups);
+  };
+
+  const updateConversation = async () => {
+    if (selectedChat && isUser) {
+      try {
+        const convo = await getConversation(account?.address, selectedChat);
+        setConversation(convo);
+      } catch (e) {
+        console.log("Failed to update conversation: ", e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAllGroups();
+  }, [account?.address]);
 
   const handleRequestPayment = async () => {
     if (!selectedChat || !requestAmount) {
@@ -366,7 +391,7 @@ const FundMateChat = ({}) => {
                       <TooltipTrigger>
                         <DropdownMenuTrigger asChild>
                           <div
-                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
+                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-20"}`}
                           >
                             <WriteIcon />
                           </div>
