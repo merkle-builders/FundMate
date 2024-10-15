@@ -360,7 +360,7 @@ const FundMateChat = ({}) => {
       </div>
 
       {/* Chat area */}
-      <div className="flex-grow flex flex-row">
+      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-row" : "flex-col"}`}>
         {selectedChat === groupName ? (
           <>
             <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-3/4 overflow-y-auto">
@@ -388,8 +388,8 @@ const FundMateChat = ({}) => {
             <div className="flex flex-col h-full w-1/4">
               <div className="flex flex-col p-3 border-t bg-slate-800 border-gray-600">
                 <h1 className="text-slate-200 text-center">Group Members</h1>
-                <div className="flex">
-                  <div className="flex justify-center gap-4 mb-4 mt-[870px]">
+                <div className="flex justify-center">
+                  <div className="flex gap-4 mb-4 mt-[870px]">
                     <HoverBorderGradient
                       containerClassName="rounded-full"
                       as="button"
@@ -409,7 +409,7 @@ const FundMateChat = ({}) => {
               </div>
             </div>
           </>
-        ) : selectedChat ? (
+        ) : filteredUsers.find((user) => user.address === selectedChat)?.username ? (
           <>
             <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">
               <DropdownMenu>
