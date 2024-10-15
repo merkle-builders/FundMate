@@ -435,7 +435,7 @@ function App() {
           </p>
           {connected ? (
             <Button className="font-bold" onClick={() => router.push("/application")}>
-              Launching App...
+              Launching App
             </Button>
           ) : (
             <WalletBaselogin />
