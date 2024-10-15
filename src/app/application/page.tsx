@@ -297,72 +297,74 @@ const FundMateChat = ({}) => {
           onMouseLeave={() => setIsChatListHover(false)}
         >
           <div className="overflow-y-auto flex-grow">
-            {groupArray &&
-              groupArray.map(
-                (group, index) =>
-                  group && (
-                    <div
-                      key={index}
-                      className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
-                        selectedChat === groupName ? "bg-slate-700" : ""
-                      }`}
-                      onClick={() => setSelectedChat(groupName)}
-                    >
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                        <div className="flex-grow">
-                          <h2>{group.groupName}</h2>
-                          <p className="text-sm text-gray-200 truncate">0 Members</p>
+            <div className="relative">
+              {groupArray &&
+                groupArray.map(
+                  (group, index) =>
+                    group && (
+                      <div
+                        key={index}
+                        className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                          selectedChat === groupName ? "bg-slate-700" : ""
+                        }`}
+                        onClick={() => setSelectedChat(groupName)}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
+                          <div className="flex-grow">
+                            <h2>{group.groupName}</h2>
+                            <p className="text-sm text-gray-200 truncate">0 Members</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ),
-              )}
-
-            {filteredUsers
-              .filter((user) => user.address !== account?.address) // Exclude the logged-in user
-              .map((user) => (
-                <div
-                  key={user.address}
-                  className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
-                    selectedChat === user.address ? "bg-slate-700" : ""
-                  }`}
-                  onClick={() => setSelectedChat(user.address)}
-                >
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                    <div className="flex-grow">
-                      <h3 className="font-semibold">{user.username}</h3>
-                      <p className="text-sm text-gray-200 truncate">
-                        {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
-                      </p>
+                    ),
+                )}
+              {filteredUsers
+                .filter((user) => user.address !== account?.address) // Exclude the logged-in user
+                .map((user) => (
+                  <div
+                    key={user.address}
+                    className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                      selectedChat === user.address ? "bg-slate-700" : ""
+                    }`}
+                    onClick={() => setSelectedChat(user.address)}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
+                      <div className="flex-grow">
+                        <h3 className="font-semibold">{user.username}</h3>
+                        <p className="text-sm text-gray-200 truncate">
+                          {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-
-            <div className="flex justify-end p-4 mt-[500px]">
-              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-                <TooltipProvider>
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger>
-                      <DropdownMenuTrigger asChild>
-                        <div
-                          className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
-                        >
-                          <WriteIcon />
-                        </div>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Actions</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <DropdownMenuContent className="w-36">
-                  <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
-                    Create Group
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                ))}
+              <div className="absolute bottom-0 right-0 p-4">
+                {" "}
+                {/* Update this line */}
+                <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger>
+                        <DropdownMenuTrigger asChild>
+                          <div
+                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
+                          >
+                            <WriteIcon />
+                          </div>
+                        </DropdownMenuTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>Actions</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <DropdownMenuContent className="w-36">
+                    <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
+                      Create Group
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </div>
