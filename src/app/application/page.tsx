@@ -360,10 +360,9 @@ const FundMateChat = ({}) => {
       </div>
 
       {/* Chat area */}
-      <div className="flex-grow flex flex-col">
+      <div className="flex-grow flex flex-row">
         {selectedChat === groupName ? (
           <>
-            <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">{/* Group Chat Header */}</div>
             <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-3/4 overflow-y-auto">
               {conversation && conversation.length > 0 && (
                 <>
@@ -386,7 +385,29 @@ const FundMateChat = ({}) => {
                 </>
               )}
             </ChatMessageList>
-            <div className="w-1/4"></div>
+            <div className="flex flex-col h-full w-1/4">
+              <div className="flex flex-col p-3 border-t bg-slate-800 border-gray-600">
+                <h1 className="text-slate-200 text-center">Group Members</h1>
+                <div className="flex">
+                  <div className="flex justify-center gap-4 mb-4 mt-[870px]">
+                    <HoverBorderGradient
+                      containerClassName="rounded-full"
+                      as="button"
+                      onClick={() => setIsShowPayModal(true)}
+                      className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                    >
+                      Pay
+                    </HoverBorderGradient>
+                    <Button
+                      className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                      onClick={() => setIsShowRequestModal(true)}
+                    >
+                      Request Payment
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         ) : selectedChat ? (
           <>
