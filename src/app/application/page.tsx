@@ -76,7 +76,7 @@ const FundMateChat = ({}) => {
   const [isShowGroupModal, setIsShowGroupModal] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo[] | null>(null);
-  const [groupData, setGroupData] = useState<ProcessedGroupInfo | null>(null);
+  // const [groupData, setGroupData] = useState<ProcessedGroupInfo | null>(null);
   const [isShowAddMember, setIsShowAddMember] = useState<boolean>(false);
 
   const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
@@ -718,24 +718,21 @@ const FundMateChat = ({}) => {
             <DialogDescription>Search for members to add</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className=" items-center gap-4">
               <Label htmlFor="requestAmount" className="text-right">
                 User Name
               </Label>
-              <VanishInput
-                placeholders={["Search your Mate", "enter username"]}
-                // value={searchTerm}
-                onChange={handleSearch}
-                onSubmit={() => console.log("search submit")}
-              />
-              {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
+              <div className="flex w-full mt-2">
+                <Input
+                  placeholder={"Find users"}
+                  // value={searchTerm}
+                  onChange={handleSearch}
+                  onSubmit={() => console.log("search submit")}
+                />
+              </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button type="submit" onClick={handleGroupCreation} disabled={loading}>
-              Create Group
-            </Button>
-          </DialogFooter>
+          <DialogFooter></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
