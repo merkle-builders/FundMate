@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -38,6 +39,7 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import PaymentCard from "@/components/PaymentCard";
 import { StarsBackground } from "@/components/ui/star-background";
 import WriteIcon from "@/components/ui/icons/writeicon";
+import AddUserIcon from "@/components/ui/icons/addUserIcon";
 
 type ProcessedUserInfo = {
   address: string;
@@ -388,22 +390,22 @@ const FundMateChat = ({}) => {
             <div className="flex flex-col h-full w-1/4">
               <div className="flex flex-col p-3 border-t bg-slate-800 border-gray-600">
                 <h1 className="text-slate-200 text-center">Group Members</h1>
-                <div className="flex justify-center">
+                <div className="flex justify-end">
                   <div className="flex gap-4 mb-4 mt-[870px]">
-                    <HoverBorderGradient
-                      containerClassName="rounded-full"
-                      as="button"
-                      onClick={() => setIsShowPayModal(true)}
-                      className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
-                    >
-                      Pay
-                    </HoverBorderGradient>
-                    <Button
-                      className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-                      onClick={() => setIsShowRequestModal(true)}
-                    >
-                      Request Payment
-                    </Button>
+                    <div className="flex items-end justify-end">
+                      <TooltipProvider>
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger>
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all cursor-pointer">
+                              <AddUserIcon />
+                            </div>
+                            <TooltipContent>
+                              <p>Add Members</p>
+                            </TooltipContent>
+                          </TooltipTrigger>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </div>
               </div>
