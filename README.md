@@ -1,19 +1,8 @@
-## Create Aptos Dapp Boilerplate Template
+# FundMate
+FundMate is a decentralized social payment and messaging platform built on the Aptos blockchain. It combines secure communication, seamless cryptocurrency payments, and group functionality, all within a user-friendly chat interface. It's designed to make chatting with friends, splitting bills, sending and requesting money as easy as posting a status update.
 
-The Boilerplate template provides a starter dapp with all necessary dapp infrastructure and a simple wallet info implementation, transfer APT and a simple message board functionality to send and read a message on chain.
-
-## Read the Boilerplate template docs
-To get started with the Boilerplate template and learn more about the template functionality and usage, head over to the [Boilerplate template docs](https://aptos.dev/en/build/create-aptos-dapp/templates/boilerplate) 
-
-
-## The Boilerplate template provides:
-
-- **Folder structure** - A pre-made dapp folder structure with a `src` (frontend) and `contract` folders.
-- **Dapp infrastructure** - All required dependencies a dapp needs to start building on the Aptos network.
-- **Wallet Info implementation** - Pre-made `WalletInfo` components to demonstrate how one can use to read a connected Wallet info.
-- **Trasnfer APT implementation** - Pre-made `transfer` components to send APT to an address.
-- **Message board functionality implementation** - Pre-made `message` components to send and read a message on chain
-
+## What you can do with it?
+![Actions](./assets/actions.png)
 
 ## What tools the template uses?
 
