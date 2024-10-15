@@ -77,6 +77,7 @@ const FundMateChat = ({}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo[] | null>(null);
   const [groupData, setGroupData] = useState<ProcessedGroupInfo | null>(null);
+  const [isShowAddMember, setIsShowAddMember] = useState<boolean>(false);
 
   const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
 
@@ -411,7 +412,6 @@ const FundMateChat = ({}) => {
           </div>
         </div>
       </div>
-
       {/* Chat area */}
       <div className={`flex-grow flex ${selectedChat === groupName ? "flex-row" : "flex-col"}`}>
         {selectedChat === groupName ? (
@@ -466,7 +466,12 @@ const FundMateChat = ({}) => {
                       <TooltipProvider>
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger>
-                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all cursor-pointer">
+                            <div
+                              onClick={() => {
+                                setIsShowAddMember(true);
+                              }}
+                              className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all cursor-pointer"
+                            >
                               <AddUserIcon />
                             </div>
                             <TooltipContent>
@@ -566,7 +571,6 @@ const FundMateChat = ({}) => {
         )}
         <StarsBackground className="pointer-events-none" />
       </div>
-
       {/* Modal Popup for username Setup */}
       <Dialog open={isShowModal}>
         <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px]">
@@ -594,7 +598,6 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Modal for Payment */}
       <Dialog open={isShowPayModal}>
         <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px]">
@@ -640,7 +643,6 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Modal for Payment Request */}
       <Dialog open={isShowRequestModal}>
         <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px]">
@@ -680,7 +682,6 @@ const FundMateChat = ({}) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Modal for Group creation */}
       <Dialog open={isShowGroupModal}>
         <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px]">
@@ -699,6 +700,35 @@ const FundMateChat = ({}) => {
                 id="groupName"
                 className="col-span-3"
               />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleGroupCreation} disabled={loading}>
+              Create Group
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for adding members */}
+      <Dialog open={isShowAddMember}>
+        <DialogContent setIsShowModal={setIsShowAddMember} className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Group members</DialogTitle>
+            <DialogDescription>Search for members to add</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="requestAmount" className="text-right">
+                User Name
+              </Label>
+              <VanishInput
+                placeholders={["Search your Mate", "enter username"]}
+                // value={searchTerm}
+                onChange={handleSearch}
+                onSubmit={() => console.log("search submit")}
+              />
+              {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
             </div>
           </div>
           <DialogFooter>
