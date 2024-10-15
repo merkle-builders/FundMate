@@ -341,15 +341,22 @@ const FundMateChat = ({}) => {
                 </div>
               ))}
 
-            <div className="flex justify-end p-4 mt-[570px]">
+            <div className="flex justify-end p-4 mt-[500px]">
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-                <DropdownMenuTrigger asChild>
-                  <div
-                    className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
-                  >
-                    <WriteIcon />
-                  </div>
-                </DropdownMenuTrigger>
+                <TooltipProvider>
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger>
+                      <DropdownMenuTrigger asChild>
+                        <div
+                          className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-0"}`}
+                        >
+                          <WriteIcon />
+                        </div>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Actions</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <DropdownMenuContent className="w-36">
                   <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
                     Create Group
