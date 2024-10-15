@@ -26,7 +26,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { createId } from "@/entry-functions/createID";
 import { getUsername } from "@/view-functions/getUsername";
 import { getAllUsers } from "@/view-functions/getAllUsers";
-import { getGroupDetails } from "@/view-functions/getGroupDetails";
+// import { getGroupDetails } from "@/view-functions/getGroupDetails";
 import { getConversation, ConversationItem } from "@/view-functions/getConversation";
 import { sendPayment } from "@/entry-functions/sendPayment";
 import { sendMessage } from "@/entry-functions/sendMessage";
