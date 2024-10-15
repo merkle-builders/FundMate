@@ -62,6 +62,8 @@ const FundMateChat = ({}) => {
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
+  const [isGroup, setIsGroup] = useState<boolean>(false);
+  const [isUser, setIsUser] = useState<boolean>(false);
   const [recipient, setRecipient] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState<string>("");
@@ -82,6 +84,7 @@ const FundMateChat = ({}) => {
   const router = useRouter();
   const messagesRef = useRef<HTMLDivElement>(null);
 
+  console.log("selected chat is:", selectedChat);
   useEffect(() => {
     const fetchAllUsers = async () => {
       const users = await getAllUsers();
@@ -93,7 +96,7 @@ const FundMateChat = ({}) => {
 
   useEffect(() => {
     const getConvo = async () => {
-      if (selectedChat) {
+      if (selectedChat && isUser) {
         try {
           const convo = await getConversation(account?.address, selectedChat);
           setConversation(convo);
@@ -101,6 +104,10 @@ const FundMateChat = ({}) => {
         } catch (e) {
           console.log("Failed to get conversation: ", e);
         }
+      } else if (isGroup) {
+        try {
+          // const groupconvo =
+        } catch (e) {}
       }
     };
     getConvo();
@@ -309,7 +316,11 @@ const FundMateChat = ({}) => {
                         className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
                           selectedChat === groupName ? "bg-slate-700" : ""
                         }`}
-                        onClick={() => setSelectedChat(groupName)}
+                        onClick={() => {
+                          setSelectedChat(groupName);
+                          setIsUser(false);
+                          setIsGroup(true);
+                        }}
                       >
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
@@ -329,7 +340,11 @@ const FundMateChat = ({}) => {
                     className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
                       selectedChat === user.address ? "bg-slate-700" : ""
                     }`}
-                    onClick={() => setSelectedChat(user.address)}
+                    onClick={() => {
+                      setSelectedChat(user.address);
+                      setIsGroup(false);
+                      setIsUser(true);
+                    }}
                   >
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
