@@ -4,9 +4,12 @@ FundMate is a decentralized social payment and messaging platform built on the A
 ## What you can do with it?
 ![Actions](./assets/actions.png)
 
-## What tools the template uses?
+## One-to-One
+![One To One Chat Payemnts and Requests](./assests/one_to_one.png)
 
-- React framework
+## Tools used
+
+- Next.js
 - shadcn/ui + tailwind for styling
 - Aptos TS SDK
 - Aptos Wallet Adapter
