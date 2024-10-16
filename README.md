@@ -4,6 +4,16 @@ FundMate is a decentralized social payment and messaging platform built on the A
 ## What you can do with it?
 ![Actions](./assets/actions.png)
 
+1. **Create ID**: Create your profile with a unique username using the `create_id` function.
+2. **Connect**: Add friends to your network with the `add_friend` function.
+3. **Chat**: Start conversations and send messages or money using `send_message`.
+4.  **Send Payments**: Individual payments are made using `send_payment`, which transfers Aptos Coins and records the transaction in both users' conversation histories.
+5. **Group Up**: Create groups for different purposes using `create_group` and add members.
+6. **Add members**: Add members to the group using `add_member_to_group_by_address`  or `add_member_to_group_by_username. 
+7. **Split Bills**: In groups, use `send_group_payment` to automatically divide payments among members.
+8. **Request Funds**: Send payment requests to friends using `request_payment`.
+9. **Track Everything**: Access your conversation and transaction history through various view functions. And see detailed analytics
+
 ## One-to-One
 ![One to One Chat payments and reqeusts](./assets/one.png)
 
