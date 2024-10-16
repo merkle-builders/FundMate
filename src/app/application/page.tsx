@@ -271,7 +271,7 @@ const FundMateChat = ({}) => {
 
         const result = await signAndSubmitTransaction(messageData);
         console.log("Message sent:", result);
-
+        await updateConversation();
         setChatMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]);
         setMessage("");
       } catch (error) {
@@ -301,7 +301,7 @@ const FundMateChat = ({}) => {
         <div className="p-3 border-b border-gray-500 flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer" />
+              <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer hover:text-gray-300 transition-colors duration-200" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -327,7 +327,7 @@ const FundMateChat = ({}) => {
         </div>
 
         <div
-          className="flex flex-col h-full relative" // Add 'relative' here
+          className="flex flex-col h-full relative overflow-x-hidden"
           onMouseEnter={() => setIsChatListHover(true)}
           onMouseLeave={() => setIsChatListHover(false)}
         >
@@ -339,9 +339,9 @@ const FundMateChat = ({}) => {
                     group && (
                       <div
                         key={index}
-                        className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                        className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                           selectedChat === groupName ? "bg-slate-700" : ""
-                        }`}
+                        } transform hover:scale-105`}
                         onClick={() => {
                           setSelectedChat(groupName);
                           setIsUser(false);
@@ -363,9 +363,9 @@ const FundMateChat = ({}) => {
                 .map((user) => (
                   <div
                     key={user.address}
-                    className={`p-4 hover:bg-slate-500 cursor-pointer transition-colors duration-200 ${
+                    className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                       selectedChat === user.address ? "bg-slate-700" : ""
-                    }`}
+                    } transform hover:scale-105`}
                     onClick={() => {
                       setSelectedChat(user.address);
                       setIsGroup(false);
@@ -392,7 +392,9 @@ const FundMateChat = ({}) => {
                       <TooltipTrigger>
                         <DropdownMenuTrigger asChild>
                           <div
-                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-opacity duration-200 ${isChatListHover || dropdownOpen ? "opacity-100" : "opacity-20"}`}
+                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-all duration-300 ${
+                              isChatListHover || dropdownOpen ? "opacity-100 scale-110" : "opacity-20 scale-100"
+                            }`}
                           >
                             <WriteIcon />
                           </div>
@@ -425,7 +427,7 @@ const FundMateChat = ({}) => {
                   <>
                     {conversation.map((convo, index) => (
                       <ChatBubble
-                        className="mb-1"
+                        className="mb-1 animate-fadeIn"
                         key={index}
                         variant={convo.sender === account?.address ? "sent" : "received"}
                       >
@@ -449,7 +451,7 @@ const FundMateChat = ({}) => {
                       placeholder="Write a message..."
                       className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    <Button type="submit" className="ml-2">
+                    <Button type="submit" className="ml-2 transition-transform duration-200 hover:scale-110">
                       <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
                     </Button>
                   </form>
@@ -470,7 +472,7 @@ const FundMateChat = ({}) => {
                               onClick={() => {
                                 setIsShowAddMember(true);
                               }}
-                              className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all cursor-pointer"
+                              className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-110"
                             >
                               <AddUserIcon />
                             </div>
@@ -491,7 +493,7 @@ const FundMateChat = ({}) => {
             <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer"></div>
+                    <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer transition-transform duration-200 hover:scale-110"></div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel></DropdownMenuLabel>
@@ -515,7 +517,7 @@ const FundMateChat = ({}) => {
                 <>
                   {conversation.map((convo, index) => (
                     <ChatBubble
-                      className="mb-1"
+                      className="mb-1 animate-fadeIn"
                       key={index}
                       variant={convo.sender === account?.address ? "sent" : "received"}
                     >
@@ -539,12 +541,12 @@ const FundMateChat = ({}) => {
                     containerClassName="rounded-full"
                     as="button"
                     onClick={() => setIsShowPayModal(true)}
-                    className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                      className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2 transition-transform duration-200 "
                   >
                     Pay
                   </HoverBorderGradient>
                   <Button
-                    className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                      className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 hover:bg-[length:300%_100%]"
                     onClick={() => setIsShowRequestModal(true)}
                   >
                     Request Payment
@@ -556,16 +558,16 @@ const FundMateChat = ({}) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Write a message..."
-                  className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                 />
-                <Button type="submit" className="ml-2">
+                  <Button type="submit" className="ml-2 transition-transform duration-200 hover:scale-105">
                   <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
                 </Button>
               </form>
             </div>
           </>
         ) : (
-          <div className="flex-grow flex items-center justify-center text-gray-600">
+              <div className="flex-grow flex items-center justify-center text-gray-600 animate-pulse">
             Select a chat to start messaging
           </div>
         )}
