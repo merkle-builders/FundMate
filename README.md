@@ -5,7 +5,7 @@ FundMate is a decentralized social payment and messaging platform built on the A
 ![Actions](./assets/actions.png)
 
 ## One-to-One
-![One To One Chat Payemnts and Requests](./assests/one_to_one.png)
+![One To One Chat Payemnts and Requests](./assests/one.png)
 
 ## Tools used
 
