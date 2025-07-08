@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Send, Menu } from "lucide-react";
+import { Send, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -78,6 +78,7 @@ const FundMateChat = ({}) => {
   const [groupInformation, setGroupInformation] = useState<ProcessedGroupInfo[] | null>(null);
   // const [groupData, setGroupData] = useState<ProcessedGroupInfo | null>(null);
   const [isShowAddMember, setIsShowAddMember] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
   const groupArray = Array.isArray(groupInformation) ? groupInformation : [groupInformation];
 
@@ -292,13 +293,68 @@ const FundMateChat = ({}) => {
     router.push("/");
   };
 
+  const handleChatSelect = (chatId: string, isGroupChat: boolean) => {
+    setSelectedChat(chatId);
+    setIsGroup(isGroupChat);
+    setIsUser(!isGroupChat);
+    // Close mobile sidebar when a chat is selected
+    setIsMobileSidebarOpen(false);
+  };
+
   console.log("selected group is:", groupArray);
 
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
-      {/* Main sidebar */}
-      <div className="w-1/4 bg-slate-800 border-r border-gray-500 flex flex-col">
-        <div className="p-3 border-b border-gray-500 flex items-center">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-slate-800 border-b border-gray-500 p-4 flex items-center justify-between">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          className="text-gray-300"
+        >
+          {isMobileSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </Button>
+        {selectedChat && (
+          <h2 className="text-white font-semibold truncate">
+            {isUser 
+              ? filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"
+              : groupName || "Group Chat"
+            }
+          </h2>
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <Menu className="w-6 h-6 text-gray-300" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuItem className="hover:cursor-pointer" onClick={() => router.push("/application/profile")}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="hover:cursor-pointer" onClick={() => handleDisconnect()}>
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Sidebar */}
+      <div className={`
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0 md:relative
+        fixed inset-y-0 left-0 z-40
+        w-full sm:w-80 md:w-1/4 
+        bg-slate-800 border-r border-gray-500 
+        flex flex-col transition-transform duration-300 ease-in-out
+        ${isMobileSidebarOpen ? 'pt-16' : 'pt-0'}
+        md:pt-0
+      `}>
+        {/* Desktop Header */}
+        <div className="hidden md:block p-3 border-b border-gray-500 flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer hover:text-gray-300 transition-colors duration-200" />
@@ -322,8 +378,16 @@ const FundMateChat = ({}) => {
               onChange={handleSearch}
               onSubmit={() => console.log("search submit")}
             />
-            {/* <Search className="absolute left-2 top-2 w-5 h-5 text-gray-400" /> */}
           </div>
+        </div>
+
+        {/* Mobile Search */}
+        <div className="md:hidden p-3 border-b border-gray-500">
+          <VanishInput
+            placeholders={["Search your Mate", "enter username"]}
+            onChange={handleSearch}
+            onSubmit={() => console.log("search submit")}
+          />
         </div>
 
         <div
@@ -342,16 +406,12 @@ const FundMateChat = ({}) => {
                         className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                           selectedChat === groupName ? "bg-slate-700" : ""
                         } transform hover:scale-105`}
-                        onClick={() => {
-                          setSelectedChat(groupName);
-                          setIsUser(false);
-                          setIsGroup(true);
-                        }}
+                        onClick={() => handleChatSelect(groupName, true)}
                       >
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                          <div className="flex-grow">
-                            <h2>{group.groupName}</h2>
+                          <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 flex-shrink-0"></div>
+                          <div className="flex-grow min-w-0">
+                            <h2 className="truncate">{group.groupName}</h2>
                             <p className="text-sm text-gray-200 truncate">0 Members</p>
                           </div>
                         </div>
@@ -366,26 +426,20 @@ const FundMateChat = ({}) => {
                     className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                       selectedChat === user.address ? "bg-slate-700" : ""
                     } transform hover:scale-105`}
-                    onClick={() => {
-                      setSelectedChat(user.address);
-                      setIsGroup(false);
-                      setIsUser(true);
-                    }}
+                    onClick={() => handleChatSelect(user.address, false)}
                   >
                     <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-blue-500 mr-3"></div>
-                      <div className="flex-grow">
-                        <h3 className="font-semibold">{user.username}</h3>
+                      <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 flex-shrink-0"></div>
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-semibold truncate">{user.username}</h3>
                         <p className="text-sm text-gray-200 truncate">
-                          {user.address.slice(0, 10) + "...." + user.address.slice(-7)}
+                          {user.address.slice(0, 6) + "...." + user.address.slice(-4)}
                         </p>
                       </div>
                     </div>
                   </div>
                 ))}
               <div className="absolute bottom-0 right-0 p-4">
-                {" "}
-                {/* Update this line */}
                 <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                   <TooltipProvider>
                     <Tooltip delayDuration={200}>
@@ -414,11 +468,20 @@ const FundMateChat = ({}) => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Overlay */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Chat area */}
-      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-row" : "flex-col"}`}>
+      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-col lg:flex-row" : "flex-col"} pt-16 md:pt-0`}>
         {selectedChat === groupName ? (
           <>
-            <div className="w-3/4">
+            <div className="flex-grow lg:w-3/4">
               <ChatMessageList
                 ref={messagesRef}
                 className="flex-grow justify-end bg-slate-950 overflow-y-auto h-full w-full p-0"
@@ -427,12 +490,12 @@ const FundMateChat = ({}) => {
                   <>
                     {conversation.map((convo, index) => (
                       <ChatBubble
-                        className="mb-1 animate-fadeIn"
+                        className="mb-1 animate-fadeIn mx-2 sm:mx-4"
                         key={index}
                         variant={convo.sender === account?.address ? "sent" : "received"}
                       >
                         <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                        <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                        <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""} max-w-[80%] sm:max-w-none`}>
                           {convo.type === "payment" ? (
                             <PaymentCard key={index} payment={convo} account={account?.address} />
                           ) : (
@@ -443,54 +506,49 @@ const FundMateChat = ({}) => {
                     ))}
                   </>
                 )}
-                <div className=" p-3 border-t bg-slate-800 border-gray-600">
-                  <form onSubmit={handleSendMessage} className="flex items-center">
+                <div className="p-3 border-t bg-slate-800 border-gray-600">
+                  <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                     <Input
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Write a message..."
-                      className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    <Button type="submit" className="ml-2 transition-transform duration-200 hover:scale-110">
-                      <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
+                    <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-110 p-2">
+                      <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
                     </Button>
                   </form>
                 </div>
               </ChatMessageList>
             </div>
 
-            <div className="flex flex-col h-full w-1/4">
-              <div className="flex flex-col p-3 border-t bg-slate-800 border-gray-600">
-                <h1 className="text-slate-200 text-center">Group Members</h1>
-                <div className="flex justify-end">
-                  <div className="flex gap-4 mb-4 mt-[870px]">
-                    <div className="flex items-end justify-end">
-                      <TooltipProvider>
-                        <Tooltip delayDuration={200}>
-                          <TooltipTrigger>
-                            <div
-                              onClick={() => {
-                                setIsShowAddMember(true);
-                              }}
-                              className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 mr-3 hover:bg-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-110"
-                            >
-                              <AddUserIcon />
-                            </div>
-                            <TooltipContent>
-                              <p>Add Members</p>
-                            </TooltipContent>
-                          </TooltipTrigger>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </div>
+            <div className="flex flex-col h-auto lg:h-full lg:w-1/4 border-t lg:border-t-0 lg:border-l border-gray-600">
+              <div className="flex flex-col p-3 bg-slate-800">
+                <h1 className="text-slate-200 text-center text-sm sm:text-base">Group Members</h1>
+                <div className="flex justify-center lg:justify-end mt-4">
+                  <TooltipProvider>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger>
+                        <div
+                          onClick={() => setIsShowAddMember(true)}
+                          className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 hover:bg-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-110"
+                        >
+                          <AddUserIcon />
+                        </div>
+                        <TooltipContent>
+                          <p>Add Members</p>
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             </div>
           </>
         ) : filteredUsers.find((user) => user.address === selectedChat)?.username ? (
           <>
-            <div className="p-4 border-b bg-slate-800 border-gray-600 flex items-center">
+            {/* Desktop Header */}
+            <div className="hidden md:block p-4 border-b bg-slate-800 border-gray-600 flex items-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer transition-transform duration-200 hover:scale-110"></div>
@@ -512,7 +570,8 @@ const FundMateChat = ({}) => {
                 {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
               </h2>
             </div>
-            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-4 w-full overflow-y-auto">
+
+            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-2 sm:p-4 w-full overflow-y-auto">
               {conversation && conversation.length > 0 && (
                 <>
                   {conversation.map((convo, index) => (
@@ -522,7 +581,7 @@ const FundMateChat = ({}) => {
                       variant={convo.sender === account?.address ? "sent" : "received"}
                     >
                       <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""} max-w-[85%] sm:max-w-none`}>
                         {convo.type === "payment" ? (
                           <PaymentCard key={index} payment={convo} account={account?.address} />
                         ) : (
@@ -535,92 +594,94 @@ const FundMateChat = ({}) => {
               )}
             </ChatMessageList>
             <div className="p-3 border-t bg-slate-800 border-gray-600">
-              <div className="flex items-center">
-                <div className="flex gap-4 mb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
+                <div className="flex gap-2 w-full sm:w-auto">
                   <HoverBorderGradient
-                    containerClassName="rounded-full"
+                    containerClassName="rounded-full flex-1 sm:flex-none"
                     as="button"
                     onClick={() => setIsShowPayModal(true)}
-                      className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2 transition-transform duration-200 "
+                      className="dark:bg-black bg-white text-black dark:text-white flex items-center justify-center space-x-2 transition-transform duration-200 text-sm px-3 py-2"
                   >
                     Pay
                   </HoverBorderGradient>
                   <Button
-                      className="inline-flex h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 hover:bg-[length:300%_100%]"
+                      className="flex-1 sm:flex-none inline-flex h-9 sm:h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 sm:px-6 font-medium text-slate-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 hover:bg-[length:300%_100%] text-xs sm:text-sm"
                     onClick={() => setIsShowRequestModal(true)}
                   >
-                    Request Payment
+                    Request
                   </Button>
                 </div>
               </div>
-              <form onSubmit={handleSendMessage} className="flex items-center">
+              <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                 <Input
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Write a message..."
-                    className="flex-grow px-4 py-2 rounded-full bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
+                    className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                 />
-                  <Button type="submit" className="ml-2 transition-transform duration-200 hover:scale-105">
-                  <Send className="w-6 h-6 text-blue-500 cursor-pointer" />
+                  <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-105 p-2">
+                  <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
                 </Button>
               </form>
             </div>
           </>
         ) : (
-              <div className="flex-grow flex items-center justify-center text-gray-600 animate-pulse">
+              <div className="flex-grow flex items-center justify-center text-gray-600 animate-pulse p-4 text-center">
             Select a chat to start messaging
           </div>
         )}
         <StarsBackground className="pointer-events-none" />
       </div>
+
       {/* Modal Popup for username Setup */}
       <Dialog open={isShowModal}>
-        <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Edit profile</DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">Make changes to your profile here. Click save when you're done.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="username" className="sm:text-right text-sm sm:text-base">
                 Username
               </Label>
               <Input
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 id="username"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleCreateProfile}>
+            <Button type="submit" onClick={handleCreateProfile} className="w-full sm:w-auto text-sm sm:text-base">
               Save changes
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       {/* Modal for Payment */}
       <Dialog open={isShowPayModal}>
-        <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>Send a Payment</DialogTitle>
-            <DialogDescription>Complete the payment details and confirm the transaction.</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Send a Payment</DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">Complete the payment details and confirm the transaction.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="recipient" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="recipient" className="sm:text-right text-sm sm:text-base">
                 Recipient
               </Label>
               <Input
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 id="recipient"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="amount" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="amount" className="sm:text-right text-sm sm:text-base">
                 Amount
               </Label>
               <Input
@@ -628,33 +689,34 @@ const FundMateChat = ({}) => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 id="amount"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="note" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="note" className="sm:text-right text-sm sm:text-base">
                 Note
               </Label>
-              <Input value={note} onChange={(e) => setNote(e.target.value)} id="note" className="col-span-3" />
+              <Input value={note} onChange={(e) => setNote(e.target.value)} id="note" className="sm:col-span-3 text-sm sm:text-base" />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSendPayment} disabled={loading}>
+            <Button type="submit" onClick={handleSendPayment} disabled={loading} className="w-full sm:w-auto text-sm sm:text-base">
               {loading ? "Sending..." : "Send Payment"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       {/* Modal for Payment Request */}
       <Dialog open={isShowRequestModal}>
-        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>Request a Payment</DialogTitle>
-            <DialogDescription>Enter the payment request details.</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Request a Payment</DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">Enter the payment request details.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="requestAmount" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="requestAmount" className="sm:text-right text-sm sm:text-base">
                 Amount
               </Label>
               <Input
@@ -662,50 +724,51 @@ const FundMateChat = ({}) => {
                 value={requestAmount}
                 onChange={(e) => setRequestAmount(e.target.value)}
                 id="requestAmount"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="requestNote" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="requestNote" className="sm:text-right text-sm sm:text-base">
                 Note
               </Label>
               <Input
                 value={requestNote}
                 onChange={(e) => setRequestNote(e.target.value)}
                 id="requestNote"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleRequestPayment} disabled={loading}>
+            <Button type="submit" onClick={handleRequestPayment} disabled={loading} className="w-full sm:w-auto text-sm sm:text-base">
               {loading ? "Sending Request..." : "Send Request"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       {/* Modal for Group creation */}
       <Dialog open={isShowGroupModal}>
-        <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>Group Creation</DialogTitle>
-            <DialogDescription>Enter your Group description</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Group Creation</DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">Enter your Group description</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="requestAmount" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+              <Label htmlFor="groupName" className="sm:text-right text-sm sm:text-base">
                 Group Name
               </Label>
               <Input
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 id="groupName"
-                className="col-span-3"
+                className="sm:col-span-3 text-sm sm:text-base"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleGroupCreation} disabled={loading}>
+            <Button type="submit" onClick={handleGroupCreation} disabled={loading} className="w-full sm:w-auto text-sm sm:text-base">
               Create Group
             </Button>
           </DialogFooter>
@@ -714,22 +777,22 @@ const FundMateChat = ({}) => {
 
       {/* Modal for adding members */}
       <Dialog open={isShowAddMember}>
-        <DialogContent setIsShowModal={setIsShowAddMember} className="sm:max-w-[425px]">
+        <DialogContent setIsShowModal={setIsShowAddMember} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>Add Group members</DialogTitle>
-            <DialogDescription>Search for members to add</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Add Group members</DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">Search for members to add</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className=" items-center gap-4">
-              <Label htmlFor="requestAmount" className="text-right">
+            <div className="items-center gap-2 sm:gap-4">
+              <Label htmlFor="userName" className="text-sm sm:text-base">
                 User Name
               </Label>
               <div className="flex w-full mt-2">
                 <Input
                   placeholder={"Find users"}
-                  // value={searchTerm}
                   onChange={handleSearch}
                   onSubmit={() => console.log("search submit")}
+                  className="text-sm sm:text-base"
                 />
               </div>
             </div>

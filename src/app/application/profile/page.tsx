@@ -45,47 +45,61 @@ const ProfileContent = () => {
   }, [profileAddress]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Button onClick={() => router.back()} variant="secondary" className="mb-6">
+    <div className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl">
+      <Button onClick={() => router.back()} variant="secondary" className="mb-4 sm:mb-6 text-sm sm:text-base">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back
       </Button>
 
-      <div className="flex flex-col gap-6">
-        <Card className="col-span-1 md:col-span-2">
+      <div className="flex flex-col gap-4 sm:gap-6">
+        <Card className="w-full">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Profile Information</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl font-bold text-center sm:text-left">Profile Information</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col justify-center items-center">
-            <div className="flex flex-col items-center mb-6 w-24 h-24">
-              <ProfileIcon />
-              <h2 className="text-xl font-semibold">{loading ? "Loading..." : username || "Username not found"}</h2>
+          <CardContent className="flex flex-col justify-center items-center p-4 sm:p-6">
+            <div className="flex flex-col items-center mb-4 sm:mb-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mb-3">
+                <ProfileIcon />
+              </div>
+              <h2 className="text-lg sm:text-xl font-semibold text-center">
+                {loading ? "Loading..." : username || "Username not found"}
+              </h2>
             </div>
-            <div className="space-y-4 w-1/2">
+            <div className="space-y-3 sm:space-y-4 w-full max-w-md sm:max-w-lg">
               <div>
-                <Label className="font-semibold">Account Address</Label>
-                <div className="flex items-center ">
-                  <Wallet className="mr-2 h-4 w-4 text-gray-500" />
-                  <Input value={account?.address} disabled={true} className="font-mono text-sm" />
+                <Label className="font-semibold text-sm sm:text-base">Account Address</Label>
+                <div className="flex items-center mt-1">
+                  <Wallet className="mr-2 h-4 w-4 text-gray-500 flex-shrink-0" />
+                  <Input 
+                    value={account?.address} 
+                    disabled={true} 
+                    className="font-mono text-xs sm:text-sm min-w-0" 
+                  />
                 </div>
               </div>
 
               <div>
-                <Label className="font-semibold">Name</Label>
-                <div className="flex items-center">
-                  <User className="mr-2 h-4 w-4 text-gray-500" />
-                  <Input value={username} disabled={true} />
+                <Label className="font-semibold text-sm sm:text-base">Name</Label>
+                <div className="flex items-center mt-1">
+                  <User className="mr-2 h-4 w-4 text-gray-500 flex-shrink-0" />
+                  <Input 
+                    value={username} 
+                    disabled={true} 
+                    className="text-sm sm:text-base"
+                  />
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="col-span-1 flex flex-col justify-center items-center">
+        <Card className="w-full">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Activity Overview</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl font-bold text-center sm:text-left">Activity Overview</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col justify-center items-center h-fit w-3/4">
-            <Linechart />
+          <CardContent className="flex flex-col justify-center items-center p-4 sm:p-6">
+            <div className="w-full max-w-full overflow-x-auto">
+              <Linechart />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -96,7 +110,14 @@ const ProfileContent = () => {
 // Main Profile component
 export default function Profile() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+          <p className="text-sm text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
       <ProfileContent />
     </Suspense>
   );

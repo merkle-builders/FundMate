@@ -422,28 +422,35 @@ function App() {
   return (
     <>
       <Header />
-      <div className="h-[40rem] w-full rounded-md flex md:items-center md:justify-center bg-gradient-to-b to-slate-900 from-black antialiased bg-grid-white/[0.02] relative overflow-hidden">
+      <div className="min-h-screen w-full rounded-md flex md:items-center md:justify-center bg-gradient-to-b to-slate-900 from-black antialiased bg-grid-white/[0.02] relative overflow-hidden">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         <ShootingStars/>
         <StarsBackground />
-        <div className=" p-4 max-w-7xl flex flex-col justify-center items-center  mx-auto relative z-10  w-full pt-20 md:pt-0">
-          <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
+        <div className="p-4 max-w-7xl flex flex-col justify-center items-center mx-auto relative z-10 w-full pt-20 md:pt-0">
+          <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 mb-4">
             FundMate.
           </h1>
-          <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
+          <p className="mt-2 sm:mt-4 font-normal text-sm sm:text-base text-neutral-300 max-w-xs sm:max-w-lg text-center mx-auto px-4 leading-relaxed">
             Decentralized messaging with built-in crypto payments on Aptos. Connect, chat, and send funds effortlessly.
           </p>
-          {connected ? (
-            <Button className="font-bold" onClick={() => router.push("/application")}>
-              Launching App
-            </Button>
-          ) : (
-            <WalletBaselogin />
-          )}
+          <div className="mt-6 sm:mt-8 mb-8 sm:mb-0">
+            {connected ? (
+              <Button 
+                className="font-bold px-6 py-3 text-sm sm:text-base transition-transform hover:scale-105" 
+                onClick={() => router.push("/application")}
+              >
+                Launching App
+              </Button>
+            ) : (
+              <div className="flex justify-center">
+                <WalletBaselogin />
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <div className="flex flex-row items-center justify-center py-24 h-screen md:h-auto bg-gradient-to-b from-slate-900 to-to-black relative w-full">
-        <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
+      <div className="flex flex-row items-center justify-center py-12 sm:py-24 min-h-screen bg-gradient-to-b from-slate-900 to-black relative w-full">
+        <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full px-4">
           <motion.div
             initial={{
               opacity: 0,
@@ -458,15 +465,15 @@ function App() {
             }}
             className="div"
           >
-            <h2 className="text-center text-xl md:text-4xl font-bold text-white">
+            <h2 className="text-center text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2 sm:mb-4">
               Connect with your frens worldwide
             </h2>
-            <p className="text-center text-base md:text-lg font-normal text-neutral-200 max-w-md mt-2 mx-auto">
+            <p className="text-center text-sm sm:text-base md:text-lg font-normal text-neutral-200 max-w-xs sm:max-w-md mt-2 mx-auto px-4">
               Search up for your friend - send message, payments and request payments. :)
             </p>
           </motion.div>
           
-          <div className="absolute p-8 w-full -bottom-20 h-72 md:h-full z-10">
+          <div className="absolute p-4 sm:p-8 w-full -bottom-10 sm:-bottom-20 h-64 sm:h-72 md:h-full z-10">
             <World data={sampleArcs} globeConfig={globeConfig} />
           </div>
         </div>
