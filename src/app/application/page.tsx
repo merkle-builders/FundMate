@@ -395,7 +395,7 @@ const FundMateChat = ({}) => {
           onMouseEnter={() => setIsChatListHover(true)}
           onMouseLeave={() => setIsChatListHover(false)}
         >
-          <div className="overflow-y-auto flex-grow">
+          <div className="overflow-y-auto flex-grow pb-16">
             <div className="relative h-full">
               {groupArray &&
                 groupArray.map(
@@ -439,31 +439,35 @@ const FundMateChat = ({}) => {
                     </div>
                   </div>
                 ))}
-              <div className="absolute bottom-0 right-0 p-4">
-                <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-                  <TooltipProvider>
-                    <Tooltip delayDuration={200}>
-                      <TooltipTrigger>
-                        <DropdownMenuTrigger asChild>
-                          <div
-                            className={`cursor-pointer rounded-full bg-blue-500 p-2 transition-all duration-300 ${
-                              isChatListHover || dropdownOpen ? "opacity-100 scale-110" : "opacity-20 scale-100"
-                            }`}
-                          >
-                            <WriteIcon />
-                          </div>
-                        </DropdownMenuTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>Actions</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <DropdownMenuContent className="w-36">
-                    <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
-                      Create Group
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+            </div>
+          </div>
+          
+          {/* Action Button - Fixed at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-800 border-t border-gray-600">
+            <div className="flex justify-center md:justify-end">
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                <TooltipProvider>
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger>
+                      <DropdownMenuTrigger asChild>
+                        <div
+                          className={`cursor-pointer rounded-full bg-blue-500 p-3 transition-all duration-300 shadow-lg ${
+                            isChatListHover || dropdownOpen ? "opacity-100 scale-110" : "opacity-80 scale-100"
+                          } hover:opacity-100 hover:scale-110`}
+                        >
+                          <WriteIcon />
+                        </div>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Actions</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <DropdownMenuContent className="w-36" align="end">
+                  <DropdownMenuItem onClick={() => setIsShowGroupModal(true)} className="hover:cursor-pointer">
+                    Create Group
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
