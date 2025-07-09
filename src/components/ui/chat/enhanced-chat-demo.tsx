@@ -5,16 +5,13 @@ import {
   ChatBubble, 
   ChatBubbleAvatar, 
   ChatBubbleMessage, 
-  ChatBubbleTimestamp,
   MessageStatus,
   DateSeparator
 } from "./chat-bubble";
 import { ChatInput, TypingIndicator } from "./chat-input";
 import { EnhancedChatMessageList } from "./chat-message-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Heart, Reply, Edit } from "lucide-react";
 
 interface Message {
   id: string;
@@ -76,7 +73,8 @@ const EnhancedChatDemo: React.FC = () => {
 
   const [currentUser] = React.useState("user1");
   const [typingUsers, setTypingUsers] = React.useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = React.useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_searchQuery, setSearchQuery] = React.useState("");
   const [searchResults, setSearchResults] = React.useState<Array<{ id: string; index: number }>>([]);
 
   const users: Record<string, User> = {
@@ -85,7 +83,7 @@ const EnhancedChatDemo: React.FC = () => {
   };
 
   // Handle sending new message
-  const handleSendMessage = (content: string, files?: File[]) => {
+  const handleSendMessage = (content: string, _files?: File[]) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content,

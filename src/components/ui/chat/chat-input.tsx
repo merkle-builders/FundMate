@@ -63,7 +63,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
     onChange,
     onKeyDown,
     ...props 
-  }, ref) => {
+  }, _ref) => { 
     const [message, setMessage] = React.useState(value);
     const [attachedFiles, setAttachedFiles] = React.useState<File[]>([]);
     const [showMentions, setShowMentions] = React.useState(false);

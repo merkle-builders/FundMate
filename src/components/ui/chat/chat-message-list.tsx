@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ChevronDown, 
   Search, 
   X, 
   ArrowDown, 
@@ -45,14 +44,14 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
     showDateSeparators = true,
     onScrollToMessage,
     ...props 
-  }, ref) => {
+  }, _ref) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [showScrollToBottom, setShowScrollToBottom] = React.useState(false);
     const [showSearch, setShowSearch] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
     const [newMessageCount, setNewMessageCount] = React.useState(0);
     const [isNearBottom, setIsNearBottom] = React.useState(true);
-    const [lastScrollTop, setLastScrollTop] = React.useState(0);
+    const [_lastScrollTop, setLastScrollTop] = React.useState(0); 
     const prevMessagesLength = React.useRef(messages.length);
 
     // Auto-scroll to bottom when new messages arrive

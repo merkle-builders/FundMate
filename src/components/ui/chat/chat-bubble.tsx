@@ -11,9 +11,7 @@ import {
   Reply, 
   Edit, 
   Trash2, 
-  Heart, 
-  ThumbsUp, 
-  Smile, 
+  Heart,
   Check, 
   CheckCheck,
   Clock,
@@ -190,7 +188,6 @@ const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({
   fallback,
   className,
   showAvatar = true,
-  variant = "received",
 }) => {
   if (!showAvatar) {
     return <div className="w-8 h-8" />; // Placeholder to maintain alignment
