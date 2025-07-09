@@ -306,17 +306,17 @@ const FundMateChat = ({}) => {
   return (
     <div className="flex h-screen bg-slate-800 overflow-hidden">
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-slate-800 border-b border-gray-500 p-4 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-slate-800 border-b border-gray-500 px-4 py-3 flex items-center justify-between h-14">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="text-gray-300"
+          className="text-gray-300 p-2"
         >
-          {isMobileSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </Button>
         {selectedChat && (
-          <h2 className="text-white font-semibold truncate">
+          <h2 className="text-white font-semibold truncate flex-1 text-center mx-4">
             {isUser 
               ? filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"
               : groupName || "Group Chat"
@@ -325,11 +325,11 @@ const FundMateChat = ({}) => {
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <Menu className="w-6 h-6 text-gray-300" />
+            <Button variant="ghost" size="sm" className="p-2">
+              <Menu className="w-5 h-5 text-gray-300" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="w-56" align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuItem className="hover:cursor-pointer" onClick={() => router.push("/application/profile")}>
               Profile
@@ -350,14 +350,16 @@ const FundMateChat = ({}) => {
         w-full sm:w-80 md:w-1/4 
         bg-slate-800 border-r border-gray-500 
         flex flex-col transition-transform duration-300 ease-in-out
-        ${isMobileSidebarOpen ? 'pt-16' : 'pt-0'}
+        ${isMobileSidebarOpen ? 'pt-14' : 'pt-0'}
         md:pt-0
       `}>
         {/* Desktop Header */}
-        <div className="hidden md:block p-3 border-b border-gray-500 flex items-center">
+        <div className="hidden md:flex p-4 border-b border-gray-500 items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Menu className="w-6 h-6 text-gray-500 mr-4 cursor-pointer hover:text-gray-300 transition-colors duration-200" />
+              <Button variant="ghost" size="sm" className="p-2">
+                <Menu className="w-5 h-5 text-gray-500 hover:text-gray-300 transition-colors duration-200" />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -371,7 +373,7 @@ const FundMateChat = ({}) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="relative flex-grow">
+          <div className="flex-1 max-w-xs">
             <VanishInput
               placeholders={["Search your Mate", "enter username"]}
               // value={searchTerm}
@@ -382,7 +384,7 @@ const FundMateChat = ({}) => {
         </div>
 
         {/* Mobile Search */}
-        <div className="md:hidden p-3 border-b border-gray-500">
+        <div className="md:hidden p-4 border-b border-gray-500">
           <VanishInput
             placeholders={["Search your Mate", "enter username"]}
             onChange={handleSearch}
@@ -482,10 +484,10 @@ const FundMateChat = ({}) => {
       )}
 
       {/* Chat area */}
-      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-col lg:flex-row" : "flex-col"} pt-16 md:pt-0`}>
+      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-col lg:flex-row" : "flex-col"} ${isMobileSidebarOpen ? 'pt-14' : 'pt-14'} md:pt-0`}>
         {selectedChat === groupName ? (
           <>
-            <div className="flex-grow lg:w-3/4">
+            <div className="flex-grow lg:w-3/4 flex flex-col">
               <ChatMessageList
                 ref={messagesRef}
                 className="flex-grow justify-end bg-slate-950 overflow-y-auto h-full w-full p-0"
@@ -510,20 +512,20 @@ const FundMateChat = ({}) => {
                     ))}
                   </>
                 )}
-                <div className="p-3 border-t bg-slate-800 border-gray-600">
-                  <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                    <Input
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Write a message..."
-                      className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                    <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-110 p-2">
-                      <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
-                    </Button>
-                  </form>
-                </div>
               </ChatMessageList>
+              <div className="p-3 border-t bg-slate-800 border-gray-600 flex-shrink-0">
+                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                  <Input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Write a message..."
+                    className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-110 p-2">
+                    <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
+                  </Button>
+                </form>
+              </div>
             </div>
 
             <div className="flex flex-col h-auto lg:h-full lg:w-1/4 border-t lg:border-t-0 lg:border-l border-gray-600">
@@ -550,12 +552,12 @@ const FundMateChat = ({}) => {
             </div>
           </>
         ) : filteredUsers.find((user) => user.address === selectedChat)?.username ? (
-          <>
+          <div className="flex flex-col h-full">
             {/* Desktop Header */}
-            <div className="hidden md:block p-4 border-b bg-slate-800 border-gray-600 flex items-center">
+            <div className="hidden md:flex p-4 border-b bg-slate-800 border-gray-600 items-center gap-3 flex-shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 hover:cursor-pointer transition-transform duration-200 hover:scale-110"></div>
+                    <div className="w-10 h-10 rounded-full bg-blue-500 hover:cursor-pointer transition-transform duration-200 hover:scale-110 flex-shrink-0"></div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel></DropdownMenuLabel>
@@ -570,7 +572,7 @@ const FundMateChat = ({}) => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <h2 className="font-semibold text-white">
+              <h2 className="font-semibold text-white text-lg">
                 {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
               </h2>
             </div>
@@ -597,7 +599,7 @@ const FundMateChat = ({}) => {
                 </>
               )}
             </ChatMessageList>
-            <div className="p-3 border-t bg-slate-800 border-gray-600">
+            <div className="p-3 border-t bg-slate-800 border-gray-600 flex-shrink-0">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
                 <div className="flex gap-2 w-full sm:w-auto">
                   <HoverBorderGradient
@@ -628,7 +630,7 @@ const FundMateChat = ({}) => {
                 </Button>
               </form>
             </div>
-          </>
+          </div>
         ) : (
               <div className="flex-grow flex items-center justify-center text-gray-600 animate-pulse p-4 text-center">
             Select a chat to start messaging
@@ -639,7 +641,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal Popup for username Setup */}
       <Dialog open={isShowModal}>
-        <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
+        <DialogContent setIsShowModal={setIsShowModal} className="sm:max-w-[425px] mx-4 max-w-[95vw] z-50">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Edit profile</DialogTitle>
             <DialogDescription className="text-sm sm:text-base">Make changes to your profile here. Click save when you're done.</DialogDescription>
@@ -667,7 +669,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal for Payment */}
       <Dialog open={isShowPayModal}>
-        <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
+        <DialogContent setIsShowModal={setIsShowPayModal} className="sm:max-w-[425px] mx-4 max-w-[95vw] z-50">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Send a Payment</DialogTitle>
             <DialogDescription className="text-sm sm:text-base">Complete the payment details and confirm the transaction.</DialogDescription>
@@ -713,7 +715,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal for Payment Request */}
       <Dialog open={isShowRequestModal}>
-        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
+        <DialogContent setIsShowModal={setIsShowRequestModal} className="sm:max-w-[425px] mx-4 max-w-[95vw] z-50">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Request a Payment</DialogTitle>
             <DialogDescription className="text-sm sm:text-base">Enter the payment request details.</DialogDescription>
@@ -753,7 +755,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal for Group creation */}
       <Dialog open={isShowGroupModal}>
-        <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
+        <DialogContent setIsShowModal={setIsShowGroupModal} className="sm:max-w-[425px] mx-4 max-w-[95vw] z-50">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Group Creation</DialogTitle>
             <DialogDescription className="text-sm sm:text-base">Enter your Group description</DialogDescription>
@@ -781,7 +783,7 @@ const FundMateChat = ({}) => {
 
       {/* Modal for adding members */}
       <Dialog open={isShowAddMember}>
-        <DialogContent setIsShowModal={setIsShowAddMember} className="sm:max-w-[425px] mx-4 max-w-[95vw]">
+        <DialogContent setIsShowModal={setIsShowAddMember} className="sm:max-w-[425px] mx-4 max-w-[95vw] z-50">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Add Group members</DialogTitle>
             <DialogDescription className="text-sm sm:text-base">Search for members to add</DialogDescription>
