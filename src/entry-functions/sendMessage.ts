@@ -3,7 +3,7 @@ import { MoveAddressType } from "@aptos-labs/ts-sdk";
 
 export type WriteMessageArguments = {
   recipientAddress: MoveAddressType;
-  messageContent: string; 
+  messageContent: string;
 };
 
 export const sendMessage = (args: WriteMessageArguments): InputTransactionData => {

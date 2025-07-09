@@ -1,6 +1,6 @@
 import { MoveValue } from "@aptos-labs/ts-sdk";
 import { testnetClient } from "../core/constants";
-import { parseReadableStringFromHex, formatTimestamp} from "@/core/utils";
+import { parseReadableStringFromHex, formatTimestamp } from "@/core/utils";
 
 export type Payment = {
   sender: string;

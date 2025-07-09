@@ -3,14 +3,14 @@ import { testnetClient } from "../core/constants";
 import { parseReadableStringFromHex, formatTimestamp } from "@/core/utils";
 
 export type Message = {
-  type: 'message';
+  type: "message";
   sender: MoveAddressType;
   content: string;
   timestamp: string;
 };
 
 export type Payment = {
-  type: 'payment';
+  type: "payment";
   sender: string;
   amount: number;
   note: string;
@@ -21,7 +21,7 @@ export type ConversationItem = Message | Payment;
 
 export const getConversation = async (
   sender: string | undefined,
-  recipientAddress: string
+  recipientAddress: string,
 ): Promise<ConversationItem[] | null> => {
   try {
     if (!sender) {
@@ -45,14 +45,14 @@ export const getConversation = async (
     const [messagesResult, paymentsResult] = result as [MoveValue[], MoveValue[]];
 
     const messages: Message[] = messagesResult.map((message: any) => ({
-      type: 'message',
+      type: "message",
       sender: message.sender,
       content: parseReadableStringFromHex(String(message.content)),
       timestamp: formatTimestamp(Number(message.timestamp)),
     }));
 
     const payments: Payment[] = paymentsResult.map((payment: any) => ({
-      type: 'payment',
+      type: "payment",
       sender: String(payment.sender),
       amount: Number(payment.amount),
       note: parseReadableStringFromHex(String(payment.note)),
@@ -62,9 +62,7 @@ export const getConversation = async (
     const combinedItems: ConversationItem[] = [...messages, ...payments];
 
     // Sort the combined array by timestamp
-    const sortedItems = combinedItems.sort((a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
+    const sortedItems = combinedItems.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
     console.log("Sorted conversation items: ", sortedItems);
     return sortedItems;

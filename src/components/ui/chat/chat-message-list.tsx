@@ -278,7 +278,7 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
             </Button>
           )}
         </div>
-      </div>
+    </div>
     );
   }
 );

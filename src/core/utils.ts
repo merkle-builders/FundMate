@@ -20,7 +20,7 @@ export const convertAptToOcta = (transferAmount: number) => {
 
 export const getAddressAsString = (address: any): any => {
   if (typeof address === "string") {
-    return address; 
+    return address;
   } else if (Array.isArray(address)) {
     return address[0] || "";
   } else if (typeof address === "object" && address !== null) {
@@ -29,7 +29,7 @@ export const getAddressAsString = (address: any): any => {
       return values[0] as string;
     }
   }
-  return ""; 
+  return "";
 };
 
 export const loadStateFromLocalStorage = () => {
@@ -80,7 +80,7 @@ export const formatDate = (timestamp: string): string => {
 };
 
 export function parseReadableStringFromHex(hexStr: string) {
-  if(hexStr[0] == "0" &&  hexStr[1] == "x"){
+  if (hexStr[0] == "0" && hexStr[1] == "x") {
     hexStr = hexStr.slice(2);
   }
   const hexValues = hexStr.split(",").map((part) => parseInt(part, 10));
@@ -93,7 +93,7 @@ export const formatTimestamp = (unixTimestamp: number): string => {
   const date = new Date(unixTimestamp * 1000);
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
-    month: "short", 
+    month: "short",
     year: "2-digit",
   });
   const formattedTime = date.toLocaleTimeString("en-US", {

@@ -3,8 +3,8 @@ import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
 
 export type RequestPaymentArguments = {
   requesteeAddress: MoveAddressType;
-  amount: number; 
-  note: string; 
+  amount: number;
+  note: string;
 };
 
 export const requestPayment = (args: RequestPaymentArguments): InputTransactionData => {
@@ -20,11 +20,7 @@ export const requestPayment = (args: RequestPaymentArguments): InputTransactionD
   return {
     data: {
       function: "0xcaf7360a4b144d245346c57a61f0681c417090ad93d65e8314c559b06bd2c435::fundmatev4::request_payment",
-      functionArguments: [
-        recipientAddress,
-        amount,
-        `0x${noteArray}`, 
-      ],
+      functionArguments: [recipientAddress, amount, `0x${noteArray}`],
       typeArguments: [],
     },
   };
