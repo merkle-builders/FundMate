@@ -304,7 +304,7 @@ const FundMateChat = ({}) => {
   console.log("selected group is:", groupArray);
 
   return (
-    <div className="flex h-screen bg-slate-800 overflow-hidden">
+    <div className="flex h-screen w-full bg-slate-800 overflow-hidden">
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-slate-800 border-b border-gray-500 px-4 py-3 flex items-center justify-between h-14">
         <Button
@@ -347,17 +347,17 @@ const FundMateChat = ({}) => {
         ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:relative
         fixed inset-y-0 left-0 z-40
-        w-full sm:w-80 md:w-1/4 
+        w-full sm:w-80 md:w-80 lg:w-96 
         bg-slate-800 border-r border-gray-500 
         flex flex-col transition-transform duration-300 ease-in-out
         ${isMobileSidebarOpen ? 'pt-14' : 'pt-0'}
         md:pt-0
       `}>
         {/* Desktop Header */}
-        <div className="hidden md:flex p-4 border-b border-gray-500 items-center gap-4">
+        <div className="hidden md:flex p-4 border-b border-gray-500 items-center gap-3 flex-shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2 flex-shrink-0">
                 <Menu className="w-5 h-5 text-gray-500 hover:text-gray-300 transition-colors duration-200" />
               </Button>
             </DropdownMenuTrigger>
@@ -373,68 +373,71 @@ const FundMateChat = ({}) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="flex-1 max-w-xs">
+          <div className="flex-1 min-w-0">
+            <div className="w-full max-w-sm">
+              <VanishInput
+                placeholders={["Search your Mate", "enter username"]}
+                onChange={handleSearch}
+                onSubmit={() => console.log("search submit")}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Search */}
+        <div className="md:hidden p-4 border-b border-gray-500 flex-shrink-0">
+          <div className="w-full max-w-sm mx-auto">
             <VanishInput
               placeholders={["Search your Mate", "enter username"]}
-              // value={searchTerm}
               onChange={handleSearch}
               onSubmit={() => console.log("search submit")}
             />
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden p-4 border-b border-gray-500">
-          <VanishInput
-            placeholders={["Search your Mate", "enter username"]}
-            onChange={handleSearch}
-            onSubmit={() => console.log("search submit")}
-          />
-        </div>
-
         <div
-          className="flex flex-col h-full relative overflow-x-hidden"
+          className="flex flex-col flex-1 relative overflow-hidden"
           onMouseEnter={() => setIsChatListHover(true)}
           onMouseLeave={() => setIsChatListHover(false)}
         >
-          <div className="overflow-y-auto flex-grow pb-16">
-            <div className="relative h-full">
+          <div className="flex-1 overflow-y-auto pb-20">
+            <div className="relative">
               {groupArray &&
                 groupArray.map(
                   (group, index) =>
                     group && (
                       <div
                         key={index}
-                        className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
+                        className={`p-3 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                           selectedChat === groupName ? "bg-slate-700" : ""
-                        } transform hover:scale-105`}
+                        } transform hover:scale-[1.02]`}
                         onClick={() => handleChatSelect(groupName, true)}
                       >
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 flex-shrink-0"></div>
-                          <div className="flex-grow min-w-0">
-                            <h2 className="truncate">{group.groupName}</h2>
-                            <p className="text-sm text-gray-200 truncate">0 Members</p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-blue-500 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <h2 className="truncate text-white font-semibold">{group.groupName}</h2>
+                            <p className="text-sm text-gray-300 truncate">0 Members</p>
                           </div>
                         </div>
                       </div>
                     ),
                 )}
               {filteredUsers
-                .filter((user) => user.address !== account?.address) // Exclude the logged-in user
+                .filter((user) => user.address !== account?.address)
                 .map((user) => (
                   <div
                     key={user.address}
-                    className={`p-4 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
+                    className={`p-3 hover:bg-slate-500 cursor-pointer transition-all duration-200 ${
                       selectedChat === user.address ? "bg-slate-700" : ""
-                    } transform hover:scale-105`}
+                    } transform hover:scale-[1.02]`}
                     onClick={() => handleChatSelect(user.address, false)}
                   >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-blue-500 mr-3 flex-shrink-0"></div>
-                      <div className="flex-grow min-w-0">
-                        <h3 className="font-semibold truncate">{user.username}</h3>
-                        <p className="text-sm text-gray-200 truncate">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-500 flex-shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold truncate text-white">{user.username}</h3>
+                        <p className="text-sm text-gray-300 truncate">
                           {user.address.slice(0, 6) + "...." + user.address.slice(-4)}
                         </p>
                       </div>
@@ -446,7 +449,7 @@ const FundMateChat = ({}) => {
           
           {/* Action Button - Fixed at bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-800 border-t border-gray-600">
-            <div className="flex justify-center md:justify-end">
+            <div className="flex justify-center">
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <TooltipProvider>
                   <Tooltip delayDuration={200}>
@@ -484,80 +487,85 @@ const FundMateChat = ({}) => {
       )}
 
       {/* Chat area */}
-      <div className={`flex-grow flex ${selectedChat === groupName ? "flex-col lg:flex-row" : "flex-col"} ${isMobileSidebarOpen ? 'pt-14' : 'pt-14'} md:pt-0`}>
+      <div className="flex-1 flex flex-col h-full relative">
+        {/* Mobile padding to account for fixed header */}
+        <div className="md:hidden h-14 flex-shrink-0"></div>
+        
         {selectedChat === groupName ? (
-          <>
-            <div className="flex-grow lg:w-3/4 flex flex-col">
-              <ChatMessageList
-                ref={messagesRef}
-                className="flex-grow justify-end bg-slate-950 overflow-y-auto h-full w-full p-0"
-              >
-                {conversation && conversation.length > 0 && (
-                  <>
-                    {conversation.map((convo, index) => (
-                      <ChatBubble
-                        className="mb-1 animate-fadeIn mx-2 sm:mx-4"
-                        key={index}
-                        variant={convo.sender === account?.address ? "sent" : "received"}
-                      >
-                        <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                        <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""} max-w-[80%] sm:max-w-none`}>
-                          {convo.type === "payment" ? (
-                            <PaymentCard key={index} payment={convo} account={account?.address} />
-                          ) : (
-                            <>{convo.content}</>
-                          )}
-                        </ChatBubbleMessage>
-                      </ChatBubble>
-                    ))}
-                  </>
-                )}
-              </ChatMessageList>
-              <div className="p-3 border-t bg-slate-800 border-gray-600 flex-shrink-0">
-                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                  <Input
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Write a message..."
-                    className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                  <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-110 p-2">
-                    <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
-                  </Button>
-                </form>
+          <div className="flex-1 flex flex-col lg:flex-row h-full">
+            <div className="flex-1 lg:flex-[3] flex flex-col h-full">
+              <div className="flex-1 flex flex-col min-h-0">
+                <ChatMessageList
+                  ref={messagesRef}
+                  className="flex-1 bg-slate-950 overflow-y-auto"
+                >
+                  {conversation && conversation.length > 0 && (
+                    <>
+                      {conversation.map((convo, index) => (
+                        <ChatBubble
+                          className="mb-4 animate-fadeIn"
+                          key={index}
+                          variant={convo.sender === account?.address ? "sent" : "received"}
+                        >
+                          <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                          <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                            {convo.type === "payment" ? (
+                              <PaymentCard key={index} payment={convo} account={account?.address} />
+                            ) : (
+                              <>{convo.content}</>
+                            )}
+                          </ChatBubbleMessage>
+                        </ChatBubble>
+                      ))}
+                    </>
+                  )}
+                </ChatMessageList>
+                <div className="p-4 border-t bg-slate-800 border-gray-600 flex-shrink-0">
+                  <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                    <Input
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Write a message..."
+                      className="flex-1 px-4 py-2 rounded-full bg-gray-700 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <Button type="submit" size="sm" className="p-2 rounded-full bg-blue-500 hover:bg-blue-600">
+                      <Send className="w-5 h-5 text-white" />
+                    </Button>
+                  </form>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col h-auto lg:h-full lg:w-1/4 border-t lg:border-t-0 lg:border-l border-gray-600">
-              <div className="flex flex-col p-3 bg-slate-800">
-                <h1 className="text-slate-200 text-center text-sm sm:text-base">Group Members</h1>
-                <div className="flex justify-center lg:justify-end mt-4">
+            <div className="lg:flex-1 flex flex-col border-t lg:border-t-0 lg:border-l border-gray-600 bg-slate-800">
+              <div className="flex flex-col p-4">
+                <h1 className="text-slate-200 text-center text-base font-semibold mb-4">Group Members</h1>
+                <div className="flex justify-center lg:justify-end">
                   <TooltipProvider>
                     <Tooltip delayDuration={200}>
                       <TooltipTrigger>
                         <div
                           onClick={() => setIsShowAddMember(true)}
-                          className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 hover:bg-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-110"
+                          className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 hover:bg-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-110"
                         >
                           <AddUserIcon />
                         </div>
-                        <TooltipContent>
-                          <p>Add Members</p>
-                        </TooltipContent>
                       </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Add Members</p>
+                      </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
               </div>
             </div>
-          </>
+          </div>
         ) : filteredUsers.find((user) => user.address === selectedChat)?.username ? (
-          <div className="flex flex-col h-full">
+          <div className="flex-1 flex flex-col h-full">
             {/* Desktop Header */}
             <div className="hidden md:flex p-4 border-b bg-slate-800 border-gray-600 items-center gap-3 flex-shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <div className="w-10 h-10 rounded-full bg-blue-500 hover:cursor-pointer transition-transform duration-200 hover:scale-110 flex-shrink-0"></div>
+                  <div className="w-10 h-10 rounded-full bg-blue-500 hover:cursor-pointer transition-transform duration-200 hover:scale-110 flex-shrink-0"></div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel></DropdownMenuLabel>
@@ -572,71 +580,77 @@ const FundMateChat = ({}) => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <h2 className="font-semibold text-white text-lg">
-                {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
-              </h2>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-white text-lg truncate">
+                  {filteredUsers.find((user) => user.address === selectedChat)?.username || "Unknown User"}
+                </h2>
+              </div>
             </div>
 
-            <ChatMessageList ref={messagesRef} className="flex-grow bg-slate-950 p-2 sm:p-4 w-full overflow-y-auto">
-              {conversation && conversation.length > 0 && (
-                <>
-                  {conversation.map((convo, index) => (
-                    <ChatBubble
-                      className="mb-1 animate-fadeIn"
-                      key={index}
-                      variant={convo.sender === account?.address ? "sent" : "received"}
-                    >
-                      <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
-                      <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""} max-w-[85%] sm:max-w-none`}>
-                        {convo.type === "payment" ? (
-                          <PaymentCard key={index} payment={convo} account={account?.address} />
-                        ) : (
-                          <>{convo.content}</>
-                        )}
-                      </ChatBubbleMessage>
-                    </ChatBubble>
-                  ))}
-                </>
-              )}
-            </ChatMessageList>
-            <div className="p-3 border-t bg-slate-800 border-gray-600 flex-shrink-0">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <HoverBorderGradient
-                    containerClassName="rounded-full flex-1 sm:flex-none"
-                    as="button"
-                    onClick={() => setIsShowPayModal(true)}
+            <div className="flex-1 flex flex-col min-h-0">
+              <ChatMessageList ref={messagesRef} className="flex-1 bg-slate-950 overflow-y-auto">
+                {conversation && conversation.length > 0 && (
+                  <>
+                    {conversation.map((convo, index) => (
+                      <ChatBubble
+                        className="mb-4 animate-fadeIn"
+                        key={index}
+                        variant={convo.sender === account?.address ? "sent" : "received"}
+                      >
+                        <ChatBubbleAvatar src="" fallback={convo.sender === account?.address ? "👦" : "👧"} />
+                        <ChatBubbleMessage className={`${convo.type === "payment" ? "bg-slate-700 p-0" : ""}`}>
+                          {convo.type === "payment" ? (
+                            <PaymentCard key={index} payment={convo} account={account?.address} />
+                          ) : (
+                            <>{convo.content}</>
+                          )}
+                        </ChatBubbleMessage>
+                      </ChatBubble>
+                    ))}
+                  </>
+                )}
+              </ChatMessageList>
+              
+              <div className="p-4 border-t bg-slate-800 border-gray-600 flex-shrink-0">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <HoverBorderGradient
+                      containerClassName="rounded-full flex-1 sm:flex-none"
+                      as="button"
+                      onClick={() => setIsShowPayModal(true)}
                       className="dark:bg-black bg-white text-black dark:text-white flex items-center justify-center space-x-2 transition-transform duration-200 text-sm px-3 py-2"
-                  >
-                    Pay
-                  </HoverBorderGradient>
-                  <Button
+                    >
+                      Pay
+                    </HoverBorderGradient>
+                    <Button
                       className="flex-1 sm:flex-none inline-flex h-9 sm:h-11 animate-shimmer items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 sm:px-6 font-medium text-slate-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 hover:bg-[length:300%_100%] text-xs sm:text-sm"
-                    onClick={() => setIsShowRequestModal(true)}
-                  >
-                    Request
-                  </Button>
+                      onClick={() => setIsShowRequestModal(true)}
+                    >
+                      Request
+                    </Button>
+                  </div>
                 </div>
+                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                  <Input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Write a message..."
+                    className="flex-1 px-4 py-2 rounded-full bg-gray-700 border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
+                  />
+                  <Button type="submit" size="sm" className="p-2 rounded-full bg-blue-500 hover:bg-blue-600">
+                    <Send className="w-5 h-5 text-white" />
+                  </Button>
+                </form>
               </div>
-              <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                <Input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Write a message..."
-                    className="flex-grow px-3 py-2 text-sm sm:px-4 sm:text-base rounded-full bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
-                />
-                  <Button type="submit" size="sm" className="transition-transform duration-200 hover:scale-105 p-2">
-                  <Send className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
-                </Button>
-              </form>
             </div>
           </div>
         ) : (
-              <div className="flex-grow flex items-center justify-center text-gray-600 animate-pulse p-4 text-center">
+          <div className="flex-1 flex items-center justify-center text-gray-600 animate-pulse p-4 text-center">
             Select a chat to start messaging
           </div>
         )}
-        <StarsBackground className="pointer-events-none" />
+        
+        <StarsBackground className="absolute inset-0 pointer-events-none -z-10" />
       </div>
 
       {/* Modal Popup for username Setup */}
